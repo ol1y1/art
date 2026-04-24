@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ol1y.art — Collection</title>
+  <script src="config.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a08;
+      --surface: #111110;
+      --border: #2a2a26;
+      --text: #e8e4d8;
+      --muted: #6b6960;
+      --accent: #c8b88a;
+      --accent-dim: #7a6e52;
+      --tag-eth: #627eea;
+      --tag-tez: #2c7df7;
+      --tag-ord: #f7931a;
+      --tag-sol: #9945ff;
+      --tag-bg: #1a1a16;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier Prime', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 3rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(10,10,8,0.94);
+      backdrop-filter: blur(14px);
+      z-index: 100;
+      animation: fadeDown 0.6s ease both;
+      gap: 2rem;
+    }
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .logo span { color: var(--accent); font-style: italic; }
+
+    .header-stats {
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* ── CHAIN FILTER ── */
+    .filter-bar {
+      display: flex;
+      gap: 0;
+      padding: 0 3rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      overflow-x: auto;
+      animation: fadeIn 0.5s ease 0.2s both;
+    }
+
+    .filter-btn {
+      padding: 0.9rem 1.4rem;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+    .filter-btn:hover { color: var(--text); }
+    .filter-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .filter-btn .dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      margin-right: 0.5em;
+      vertical-align: middle;
+      margin-top: -2px;
+    }
+    .dot-all { background: var(--accent); }
+    .dot-ethereum { background: var(--tag-eth); }
+    .dot-tezos { background: var(--tag-tez); }
+    .dot-ordinals { background: var(--tag-ord); }
+    .dot-solana { background: var(--tag-sol); }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative;
+      height: 88vh;
+      display: flex;
+      align-items: flex-end;
+      padding: 3rem;
+      overflow: hidden;
+      cursor: pointer;
+      animation: fadeIn 0.8s ease 0.1s both;
+    }
+
+    #hero-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 8s ease, opacity 0.8s ease;
+    }
+
+    #hero:hover #hero-bg { transform: scale(1.03); }
+
+    #hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(10,10,8,0.97) 0%,
+        rgba(10,10,8,0.35) 55%,
+        rgba(10,10,8,0.05) 100%
+      );
+    }
+
+    .hero-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      color: var(--border);
+    }
+
+    .hero-info {
+      position: relative;
+      z-index: 2;
+      max-width: 700px;
+      animation: fadeUp 0.9s ease 0.4s both;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.62rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 5.5vw, 4.5rem);
+      font-weight: 300;
+      line-height: 1.06;
+      margin-bottom: 0.8rem;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 1.2rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .hero-artist {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .chain-badge {
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.22em 0.65em;
+      border-radius: 2px;
+      border: 1px solid;
+    }
+    .chain-badge.ethereum { color: var(--tag-eth); border-color: var(--tag-eth); }
+    .chain-badge.tezos    { color: var(--tag-tez); border-color: var(--tag-tez); }
+    .chain-badge.ordinals { color: var(--tag-ord); border-color: var(--tag-ord); }
+    .chain-badge.solana   { color: var(--tag-sol); border-color: var(--tag-sol); }
+
+    .hero-link {
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+      margin-left: auto;
+    }
+    .hero-link:hover { color: var(--accent); border-color: var(--accent-dim); }
+
+    .hero-nav {
+      position: absolute;
+      bottom: 3rem;
+      right: 3rem;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .hero-nav-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.7rem;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .hero-nav-btn:hover { color: var(--text); border-color: var(--muted); }
+
+    .hero-counter {
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 2.5rem 3rem 1.5rem;
+    }
+
+    .section-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .section-line { flex: 1; height: 1px; background: var(--border); }
+
+    /* ── LOADING ── */
+    #loading {
+      text-align: center;
+      padding: 5rem 3rem;
+      animation: pulse 1.5s ease infinite;
+    }
+
+    .loading-text {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .loading-chains {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .chain-status {
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .chain-status .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+    .chain-status.loading .dot { background: var(--muted); animation: pulse 1s ease infinite; }
+    .chain-status.done .dot { background: #4caf50; }
+    .chain-status.error .dot { background: #e53e3e; }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      margin: 0 3rem;
+      border: 1px solid var(--border);
+    }
+
+    .card {
+      background: var(--bg);
+      cursor: pointer;
+      overflow: hidden;
+      transition: background 0.2s;
+      animation: fadeIn 0.4s ease both;
+    }
+    .card:hover { background: var(--surface); }
+
+    .card-img-wrap {
+      aspect-ratio: 1;
+      overflow: hidden;
+      position: relative;
+      background: var(--tag-bg);
+    }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+      display: block;
+    }
+    .card:hover .card-img { transform: scale(1.06); }
+
+    .card-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--border);
+      font-size: 2.5rem;
+    }
+
+    .pinned-badge {
+      position: absolute;
+      top: 0.6rem;
+      left: 0.6rem;
+      font-size: 0.55rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 0.2em 0.5em;
+      background: var(--accent);
+      color: var(--bg);
+      border-radius: 1px;
+    }
+
+    .card-body {
+      padding: 0.85rem 1rem 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 300;
+      margin-bottom: 0.25rem;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-artist {
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      margin-bottom: 0.65rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-link {
+      font-size: 0.55rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .card-link:hover { color: var(--accent); }
+
+    /* ── PAGINATION ── */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      padding: 0.5rem 1rem;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .page-btn:hover, .page-btn.active { border-color: var(--accent-dim); color: var(--accent); }
+
+    /* ── EMPTY ── */
+    .empty {
+      padding: 5rem 3rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+    }
+
+    /* ── ERROR BANNER ── */
+    .error-banner {
+      margin: 1rem 3rem;
+      padding: 1rem 1.2rem;
+      border: 1px solid #7a3030;
+      background: #1a0a0a;
+      font-size: 0.65rem;
+      color: #e07070;
+      letter-spacing: 0.08em;
+      line-height: 1.6;
+    }
+
+    /* ── MODAL ── */
+    #modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,10,8,0.97);
+      z-index: 500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      backdrop-filter: blur(6px);
+    }
+    #modal-overlay.open {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      max-width: 1020px;
+      width: 100%;
+      max-height: 90vh;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .modal-img-wrap {
+      overflow: hidden;
+      background: var(--tag-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      max-height: 80vh;
+    }
+
+    .modal-placeholder {
+      font-size: 5rem;
+      color: var(--border);
+    }
+
+    .modal-info {
+      padding: 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid var(--border);
+      overflow-y: auto;
+      gap: 0;
+    }
+
+    .modal-eyebrow {
+      font-size: 0.58rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+    .modal-eyebrow.ethereum { color: var(--tag-eth); }
+    .modal-eyebrow.tezos    { color: var(--tag-tez); }
+    .modal-eyebrow.ordinals { color: var(--tag-ord); }
+    .modal-eyebrow.solana   { color: var(--tag-sol); }
+
+    .modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.9rem;
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 0.4rem;
+    }
+
+    .modal-artist {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 1.8rem;
+      letter-spacing: 0.05em;
+    }
+
+    .modal-divider { height: 1px; background: var(--border); margin-bottom: 1.8rem; }
+
+    .modal-field { margin-bottom: 1.3rem; }
+    .modal-field-label {
+      font-size: 0.56rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+    .modal-field-value {
+      font-size: 0.8rem;
+      color: var(--text);
+      word-break: break-all;
+    }
+
+    .modal-cta {
+      margin-top: auto;
+      padding-top: 1.5rem;
+      display: inline-block;
+      padding: 1.5rem 1.2rem 0.8rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      border-top: 1px solid var(--border);
+      transition: background 0.2s, color 0.2s;
+      text-align: center;
+      margin: auto -2rem -2rem;
+    }
+    .modal-cta:hover { background: var(--accent); color: var(--bg); }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      padding: 0.35rem 0.65rem;
+      z-index: 10;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .modal-close:hover { color: var(--text); border-color: var(--muted); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      margin-top: 4rem;
+      padding: 2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
+    @keyframes fadeUp  { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeDown{ from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      header { padding: 1.1rem 1.5rem; }
+      .filter-bar { padding: 0 1.5rem; }
+      #hero { padding: 1.5rem; height: 65vh; }
+      .hero-nav { bottom: 1.5rem; right: 1.5rem; }
+      .section-header { padding: 1.8rem 1.5rem 1rem; }
+      .grid { margin: 0 1.5rem; grid-template-columns: 1fr 1fr; }
+      .modal { grid-template-columns: 1fr; }
+      .modal-img-wrap { max-height: 45vw; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1.5rem; }
+    }
+
+    @media (max-width: 480px) {
+      .grid { grid-template-columns: 1fr; margin: 0 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="#" class="logo">ol1y<span>.art</span></a>
+  <span class="header-stats" id="header-stats">Loading collection…</span>
+</header>
+
+<div class="filter-bar" id="filter-bar" style="display:none">
+  <button class="filter-btn active" data-chain="all" onclick="setFilter('all')">
+    <span class="dot dot-all"></span>All
+  </button>
+  <button class="filter-btn" data-chain="ethereum" onclick="setFilter('ethereum')">
+    <span class="dot dot-ethereum"></span>Ethereum
+  </button>
+  <button class="filter-btn" data-chain="tezos" onclick="setFilter('tezos')">
+    <span class="dot dot-tezos"></span>Tezos
+  </button>
+  <button class="filter-btn" data-chain="ordinals" onclick="setFilter('ordinals')">
+    <span class="dot dot-ordinals"></span>Ordinals
+  </button>
+  <button class="filter-btn" data-chain="solana" onclick="setFilter('solana')">
+    <span class="dot dot-solana"></span>Solana
+  </button>
+</div>
+
+<!-- HERO -->
+<section id="hero" onclick="heroClick()">
+  <img id="hero-bg" src="" alt="" style="opacity:0" />
+  <div class="hero-placeholder" id="hero-placeholder">◈</div>
+  <div class="hero-info">
+    <p class="hero-eyebrow" id="hero-eyebrow">Featured work</p>
+    <h1 class="hero-title" id="hero-title">Loading collection…</h1>
+    <div class="hero-meta" id="hero-meta" style="opacity:0">
+      <span class="hero-artist" id="hero-artist"></span>
+      <span class="chain-badge" id="hero-chain"></span>
+      <a class="hero-link" id="hero-link" href="#" target="_blank" rel="noopener">View on-chain ↗</a>
+    </div>
+  </div>
+  <div class="hero-nav" id="hero-nav" style="opacity:0">
+    <button class="hero-nav-btn" onclick="prevHero(event)">← prev</button>
+    <span class="hero-counter" id="hero-counter">— / —</span>
+    <button class="hero-nav-btn" onclick="nextHero(event)">next →</button>
+  </div>
+</section>
+
+<!-- LOADING -->
+<div id="loading">
+  <p class="loading-text">Fetching your collection</p>
+  <div class="loading-chains">
+    <span class="chain-status loading" id="status-ethereum">
+      <span class="dot"></span>Ethereum
+    </span>
+    <span class="chain-status loading" id="status-tezos">
+      <span class="dot"></span>Tezos
+    </span>
+    <span class="chain-status loading" id="status-ordinals">
+      <span class="dot"></span>Ordinals
+    </span>
+    <span class="chain-status loading" id="status-solana">
+      <span class="dot"></span>Solana
+    </span>
+  </div>
+</div>
+
+<div id="errors"></div>
+
+<!-- GRID -->
+<div class="section-header" id="section-header" style="display:none">
+  <span class="section-label">Collection</span>
+  <div class="section-line"></div>
+  <span class="section-label" id="count-label"></span>
+</div>
+
+<div class="grid" id="grid" style="display:none"></div>
+<div class="pagination" id="pagination"></div>
+
+<!-- MODAL -->
+<div id="modal-overlay" onclick="handleModalClick(event)">
+  <div class="modal" id="modal">
+    <div class="modal-img-wrap" id="modal-img-wrap">
+      <span class="modal-placeholder">◈</span>
+    </div>
+    <div class="modal-info">
+      <p class="modal-eyebrow" id="modal-chain-label">Collection</p>
+      <h2 class="modal-title" id="modal-title">—</h2>
+      <p class="modal-artist" id="modal-artist">—</p>
+      <div class="modal-divider"></div>
+      <div class="modal-field">
+        <p class="modal-field-label">Blockchain</p>
+        <p class="modal-field-value" id="modal-chain-value">—</p>
+      </div>
+      <div class="modal-field" id="modal-contract-field" style="display:none">
+        <p class="modal-field-label">Contract / Token</p>
+        <p class="modal-field-value" id="modal-contract">—</p>
+      </div>
+      <a class="modal-cta" id="modal-link" href="#" target="_blank" rel="noopener">View on-chain ↗</a>
+    </div>
+    <button class="modal-close" onclick="closeModal()">✕ close</button>
+  </div>
+</div>
+
+<footer>
+  <span>ol1y.art</span>
+  <span>Personal collection — all rights belong to respective artists</span>
+</footer>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────
+let allNFTs = [];
+let filteredNFTs = [];
+let currentFilter = 'all';
+let heroIndex = 0;
+let currentPage = 1;
+const PAGE_SIZE = CONFIG.pageSize || 24;
+
+// Chain display names & marketplace links
+const CHAIN_META = {
+  ethereum: { label: 'Ethereum', link: (c,t) => `https://opensea.io/assets/ethereum/${c}/${t}` },
+  tezos:    { label: 'Tezos',    link: (c,t) => `https://objkt.com/tokens/${c}/${t}` },
+  ordinals: { label: 'Ordinals', link: (c,t) => `https://gamma.io/inscription/${c}` },
+  solana:   { label: 'Solana',   link: (c,t) => `https://magiceden.io/item-details/${c}` },
+};
+
+// ── HELPERS ────────────────────────────────────────────────────
+function isHidden(nft) {
+  if (CONFIG.hiddenWallets.includes(nft.wallet)) return true;
+  const key = `${nft.contract}:${nft.tokenId}`;
+  if (CONFIG.hidden.includes(key)) return true;
+  if (CONFIG.hidden.includes(nft.contract)) return true;
+  return false;
+}
+
+function isPinned(nft) {
+  const key = `${nft.contract}:${nft.tokenId}`;
+  return CONFIG.pinned.includes(key) || CONFIG.pinned.includes(nft.contract);
+}
+
+function setChainStatus(chain, state) {
+  const el = document.getElementById(`status-${chain}`);
+  if (!el) return;
+  el.className = `chain-status ${state}`;
+}
+
+function addError(msg) {
+  const el = document.getElementById('errors');
+  const div = document.createElement('div');
+  div.className = 'error-banner';
+  div.textContent = msg;
+  el.appendChild(div);
+}
+
+// ── FETCH: ETHEREUM ────────────────────────────────────────────
+async function fetchEthereum() {
+  if (!CONFIG.alchemyKey || CONFIG.alchemyKey === 'YOUR_ALCHEMY_KEY_HERE') {
+    setChainStatus('ethereum', 'error');
+    addError('Ethereum: Add your Alchemy API key to config.js to load Ethereum NFTs.');
+    return [];
+  }
+  const results = [];
+  for (const wallet of CONFIG.wallets.ethereum) {
+    if (CONFIG.hiddenWallets.includes(wallet)) continue;
+    try {
+      let pageKey = null;
+      do {
+        const url = new URL(`https://eth-mainnet.g.alchemy.com/nft/v3/${CONFIG.alchemyKey}/getNFTsForOwner`);
+        url.searchParams.set('owner', wallet);
+        url.searchParams.set('withMetadata', 'true');
+        url.searchParams.set('pageSize', '100');
+        if (pageKey) url.searchParams.set('pageKey', pageKey);
+        const r = await fetch(url);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const data = await r.json();
+        for (const nft of (data.ownedNfts || [])) {
+          results.push({
+            chain: 'ethereum',
+            wallet,
+            title: nft.name || nft.contract?.name || 'Untitled',
+            artist: nft.contract?.name || '',
+            image: nft.image?.cachedUrl || nft.image?.thumbnailUrl || nft.image?.originalUrl || '',
+            contract: nft.contract?.address || '',
+            tokenId: nft.tokenId || '',
+            link: CHAIN_META.ethereum.link(nft.contract?.address, nft.tokenId),
+          });
+        }
+        pageKey = data.pageKey || null;
+      } while (pageKey);
+    } catch(e) {
+      addError(`Ethereum wallet ${wallet.slice(0,8)}…: ${e.message}`);
+    }
+  }
+  setChainStatus('ethereum', 'done');
+  return results;
+}
+
+// ── FETCH: TEZOS ───────────────────────────────────────────────
+async function fetchTezos() {
+  const results = [];
+  for (const wallet of CONFIG.wallets.tezos) {
+    if (CONFIG.hiddenWallets.includes(wallet)) continue;
+    try {
+      let offset = 0, limit = 50, more = true;
+      while (more) {
+        const url = `https://api.tzkt.io/v1/tokens/balances?account=${wallet}&balance.gt=0&limit=${limit}&offset=${offset}&token.standard=fa2`;
+        const r = await fetch(url);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const data = await r.json();
+        for (const item of data) {
+          const meta = item.token?.metadata || {};
+          const imgRaw = meta.thumbnailUri || meta.displayUri || meta.artifactUri || '';
+          const image = imgRaw.replace('ipfs://', 'https://ipfs.io/ipfs/');
+          results.push({
+            chain: 'tezos',
+            wallet,
+            title: meta.name || 'Untitled',
+            artist: meta.creators?.[0] || item.token?.contract?.alias || '',
+            image,
+            contract: item.token?.contract?.address || '',
+            tokenId: item.token?.tokenId || '',
+            link: CHAIN_META.tezos.link(item.token?.contract?.address, item.token?.tokenId),
+          });
+        }
+        more = data.length === limit;
+        offset += limit;
+      }
+    } catch(e) {
+      addError(`Tezos wallet ${wallet.slice(0,8)}…: ${e.message}`);
+    }
+  }
+  setChainStatus('tezos', 'done');
+  return results;
+}
+
+// ── FETCH: ORDINALS ────────────────────────────────────────────
+async function fetchOrdinals() {
+  const results = [];
+  for (const wallet of CONFIG.wallets.ordinals) {
+    if (CONFIG.hiddenWallets.includes(wallet)) continue;
+    try {
+      let offset = 0, limit = 60, more = true;
+      while (more) {
+        const r = await fetch(`https://api.hiro.so/ordinals/v1/inscriptions?address=${wallet}&limit=${limit}&offset=${offset}`);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const data = await r.json();
+        const items = data.results || [];
+        for (const ins of items) {
+          const isImg = ins.mime_type?.startsWith('image/');
+          results.push({
+            chain: 'ordinals',
+            wallet,
+            title: ins.meta?.name || `Inscription #${ins.number}`,
+            artist: ins.meta?.collection_name || '',
+            image: isImg ? `https://ord.io/${ins.id}` : '',
+            contract: ins.id,
+            tokenId: String(ins.number),
+            link: `https://gamma.io/inscription/${ins.id}`,
+          });
+        }
+        more = items.length === limit;
+        offset += limit;
+      }
+    } catch(e) {
+      addError(`Ordinals wallet ${wallet.slice(0,8)}…: ${e.message}`);
+    }
+  }
+  setChainStatus('ordinals', 'done');
+  return results;
+}
+
+// ── FETCH: SOLANA ──────────────────────────────────────────────
+async function fetchSolana() {
+  const results = [];
+  for (const wallet of CONFIG.wallets.solana) {
+    if (CONFIG.hiddenWallets.includes(wallet)) continue;
+    try {
+      // Use Helius free API (no key needed for basic DAS)
+      const r = await fetch(`https://mainnet.helius-rpc.com/?api-key=demo`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0', id: 1,
+          method: 'getAssetsByOwner',
+          params: { ownerAddress: wallet, page: 1, limit: 1000, displayOptions: { showFungible: false } }
+        })
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json();
+      for (const asset of (data.result?.items || [])) {
+        if (asset.interface === 'FungibleToken') continue;
+        const meta = asset.content?.metadata || {};
+        const image = asset.content?.links?.image || asset.content?.files?.[0]?.cdn_uri || '';
+        results.push({
+          chain: 'solana',
+          wallet,
+          title: meta.name || 'Untitled',
+          artist: meta.symbol || asset.grouping?.[0]?.collection_metadata?.name || '',
+          image,
+          contract: asset.id,
+          tokenId: asset.id,
+          link: `https://magiceden.io/item-details/${asset.id}`,
+        });
+      }
+    } catch(e) {
+      addError(`Solana wallet ${wallet.slice(0,8)}…: ${e.message}`);
+    }
+  }
+  setChainStatus('solana', 'done');
+  return results;
+}
+
+// ── RENDER: HERO ───────────────────────────────────────────────
+const pinnedNFTs = () => allNFTs.filter(isPinned);
+const heroPool   = () => pinnedNFTs().length ? pinnedNFTs() : allNFTs.slice(0, 12);
+
+function renderHero(idx) {
+  const pool = heroPool();
+  if (!pool.length) return;
+  heroIndex = (idx + pool.length) % pool.length;
+  const nft = pool[heroIndex];
+
+  const bg = document.getElementById('hero-bg');
+  if (nft.image) {
+    bg.src = nft.image;
+    bg.style.opacity = '1';
+    document.getElementById('hero-placeholder').style.display = 'none';
+  } else {
+    bg.style.opacity = '0';
+    document.getElementById('hero-placeholder').style.display = 'flex';
+  }
+
+  document.getElementById('hero-title').textContent = nft.title;
+  document.getElementById('hero-artist').textContent = nft.artist || 'Unknown artist';
+
+  const chainEl = document.getElementById('hero-chain');
+  chainEl.textContent = CHAIN_META[nft.chain]?.label || nft.chain;
+  chainEl.className = `chain-badge ${nft.chain}`;
+
+  document.getElementById('hero-link').href = nft.link;
+
+  const eyebrow = document.getElementById('hero-eyebrow');
+  eyebrow.textContent = isPinned(nft) ? 'Pinned work' : 'Featured work';
+
+  document.getElementById('hero-counter').textContent =
+    `${String(heroIndex + 1).padStart(2,'0')} / ${String(pool.length).padStart(2,'0')}`;
+
+  document.getElementById('hero-meta').style.opacity = '1';
+  document.getElementById('hero-nav').style.opacity = '1';
+}
+
+function prevHero(e) { e.stopPropagation(); renderHero(heroIndex - 1); }
+function nextHero(e) { e.stopPropagation(); renderHero(heroIndex + 1); }
+function heroClick() { openModal(heroPool()[heroIndex]); }
+
+// ── RENDER: GRID ───────────────────────────────────────────────
+function renderGrid() {
+  filteredNFTs = currentFilter === 'all'
+    ? allNFTs
+    : allNFTs.filter(n => n.chain === currentFilter);
+
+  const total = filteredNFTs.length;
+  document.getElementById('count-label').textContent = `${total} work${total !== 1 ? 's' : ''}`;
+  document.getElementById('header-stats').textContent =
+    `${allNFTs.length} works across ${Object.keys(CONFIG.wallets).length} chains`;
+
+  const grid = document.getElementById('grid');
+  const totalPages = PAGE_SIZE > 0 ? Math.ceil(total / PAGE_SIZE) : 1;
+  currentPage = Math.min(currentPage, totalPages || 1);
+
+  const start = PAGE_SIZE > 0 ? (currentPage - 1) * PAGE_SIZE : 0;
+  const page  = PAGE_SIZE > 0 ? filteredNFTs.slice(start, start + PAGE_SIZE) : filteredNFTs;
+
+  grid.innerHTML = page.map((nft, i) => {
+    const pinned = isPinned(nft);
+    return `
+    <div class="card" onclick="openModal(allNFTs[${allNFTs.indexOf(nft)}])" style="animation-delay:${Math.min(i,12)*0.04}s">
+      <div class="card-img-wrap">
+        ${nft.image
+          ? `<img class="card-img" src="${nft.image}" alt="${escHtml(nft.title)}" loading="lazy" onerror="this.style.display='none'" />`
+          : `<div class="card-placeholder">◈</div>`}
+        ${pinned ? `<span class="pinned-badge">Pinned</span>` : ''}
+      </div>
+      <div class="card-body">
+        <p class="card-title">${escHtml(nft.title)}</p>
+        <p class="card-artist">${escHtml(nft.artist || 'Unknown artist')}</p>
+        <div class="card-footer">
+          <span class="chain-badge ${nft.chain}">${CHAIN_META[nft.chain]?.label || nft.chain}</span>
+          <a class="card-link" href="${nft.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">On-chain ↗</a>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Pagination
+  const pag = document.getElementById('pagination');
+  if (totalPages > 1) {
+    let btns = '';
+    if (currentPage > 1) btns += `<button class="page-btn" onclick="goPage(${currentPage-1})">← prev</button>`;
+    for (let p = 1; p <= totalPages; p++) {
+      if (p === 1 || p === totalPages || Math.abs(p - currentPage) <= 2)
+        btns += `<button class="page-btn${p===currentPage?' active':''}" onclick="goPage(${p})">${p}</button>`;
+      else if (Math.abs(p - currentPage) === 3)
+        btns += `<span class="page-btn" style="border:none;cursor:default">…</span>`;
+    }
+    if (currentPage < totalPages) btns += `<button class="page-btn" onclick="goPage(${currentPage+1})">next →</button>`;
+    pag.innerHTML = btns;
+  } else {
+    pag.innerHTML = '';
+  }
+}
+
+function goPage(p) {
+  currentPage = p;
+  renderGrid();
+  document.getElementById('section-header').scrollIntoView({ behavior: 'smooth' });
+}
+
+function setFilter(chain) {
+  currentFilter = chain;
+  currentPage = 1;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.chain === chain);
+  });
+  renderGrid();
+}
+
+// ── MODAL ──────────────────────────────────────────────────────
+let currentModalNFT = null;
+
+function openModal(nft) {
+  currentModalNFT = nft;
+  const wrap = document.getElementById('modal-img-wrap');
+  if (nft.image) {
+    wrap.innerHTML = `<img class="modal-img" src="${nft.image}" alt="${escHtml(nft.title)}" />`;
+  } else {
+    wrap.innerHTML = `<span class="modal-placeholder">◈</span>`;
+  }
+
+  const chainLabel = document.getElementById('modal-chain-label');
+  chainLabel.textContent = CHAIN_META[nft.chain]?.label || nft.chain;
+  chainLabel.className = `modal-eyebrow ${nft.chain}`;
+
+  document.getElementById('modal-title').textContent = nft.title;
+  document.getElementById('modal-artist').textContent = nft.artist || 'Unknown artist';
+  document.getElementById('modal-chain-value').textContent = CHAIN_META[nft.chain]?.label || nft.chain;
+
+  const contractField = document.getElementById('modal-contract-field');
+  if (nft.contract && nft.tokenId) {
+    contractField.style.display = 'block';
+    document.getElementById('modal-contract').textContent = nft.tokenId
+      ? `${nft.contract.slice(0,14)}… / #${nft.tokenId}`
+      : nft.contract;
+  } else {
+    contractField.style.display = 'none';
+  }
+
+  document.getElementById('modal-link').href = nft.link;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleModalClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ── UTILITY ────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── INIT ────────────────────────────────────────────────────────
+async function init() {
+  const [eth, tez, ord, sol] = await Promise.all([
+    fetchEthereum(),
+    fetchTezos(),
+    fetchOrdinals(),
+    fetchSolana(),
+  ]);
+
+  // Merge, filter hidden, sort pinned first
+  const raw = [...eth, ...tez, ...ord, ...sol].filter(n => !isHidden(n));
+  allNFTs = [
+    ...raw.filter(isPinned),
+    ...raw.filter(n => !isPinned(n)),
+  ];
+
+  // Hide loading, show UI
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('section-header').style.display = 'flex';
+  document.getElementById('grid').style.display = 'grid';
+  if (CONFIG.showChainFilter) document.getElementById('filter-bar').style.display = 'flex';
+
+  renderHero(0);
+  renderGrid();
+}
+
+init();
+</script>
+</body>
+</html>
