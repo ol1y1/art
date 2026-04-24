@@ -11,18 +11,17 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0a0a08;
-      --surface: #111110;
-      --border: #2a2a26;
-      --text: #e8e4d8;
-      --muted: #6b6960;
-      --accent: #c8b88a;
-      --accent-dim: #7a6e52;
-      --tag-eth: #627eea;
-      --tag-tez: #2c7df7;
-      --tag-ord: #f7931a;
-      --tag-sol: #9945ff;
-      --tag-bg: #1a1a16;
+      --bg:        #0a0a08;
+      --surface:   #111110;
+      --border:    #242420;
+      --text:      #e8e4d8;
+      --muted:     #6b6960;
+      --accent:    #c8b88a;
+      --accent-dim:#7a6e52;
+      --eth:  #627eea;
+      --tez:  #2c7df7;
+      --ord:  #f7931a;
+      --sol:  #9945ff;
     }
 
     html { scroll-behavior: smooth; }
@@ -35,14 +34,13 @@
       overflow-x: hidden;
     }
 
-    body::before {
+    body::after {
       content: '';
       position: fixed;
       inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
       pointer-events: none;
-      z-index: 1000;
-      opacity: 0.4;
+      z-index: 9999;
     }
 
     /* ── HEADER ── */
@@ -50,52 +48,50 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.5rem 3rem;
+      padding: 1.4rem 2.5rem;
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
-      background: rgba(10,10,8,0.94);
-      backdrop-filter: blur(14px);
-      z-index: 100;
-      animation: fadeDown 0.6s ease both;
-      gap: 2rem;
+      background: rgba(10,10,8,0.95);
+      backdrop-filter: blur(16px);
+      z-index: 200;
+      animation: fadeDown 0.5s ease both;
     }
 
     .logo {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       font-weight: 300;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       color: var(--text);
       text-decoration: none;
-      white-space: nowrap;
     }
-    .logo span { color: var(--accent); font-style: italic; }
+    .logo em { color: var(--accent); font-style: italic; }
 
     .header-stats {
-      font-size: 0.62rem;
-      letter-spacing: 0.15em;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
       color: var(--muted);
       text-transform: uppercase;
-      white-space: nowrap;
     }
 
-    /* ── CHAIN FILTER ── */
+    /* ── FILTER BAR ── */
     .filter-bar {
       display: flex;
-      gap: 0;
-      padding: 0 3rem;
       border-bottom: 1px solid var(--border);
-      background: var(--bg);
       overflow-x: auto;
-      animation: fadeIn 0.5s ease 0.2s both;
+      background: var(--bg);
+      position: sticky;
+      top: 57px;
+      z-index: 100;
+      animation: fadeIn 0.4s ease 0.15s both;
     }
 
     .filter-btn {
-      padding: 0.9rem 1.4rem;
+      padding: 0.85rem 1.6rem;
       font-family: 'Courier Prime', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.2em;
+      font-size: 0.6rem;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--muted);
       background: none;
@@ -104,56 +100,49 @@
       cursor: pointer;
       transition: color 0.2s, border-color 0.2s;
       white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
     }
     .filter-btn:hover { color: var(--text); }
     .filter-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-    .filter-btn .dot {
-      display: inline-block;
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      margin-right: 0.5em;
-      vertical-align: middle;
-      margin-top: -2px;
-    }
-    .dot-all { background: var(--accent); }
-    .dot-ethereum { background: var(--tag-eth); }
-    .dot-tezos { background: var(--tag-tez); }
-    .dot-ordinals { background: var(--tag-ord); }
-    .dot-solana { background: var(--tag-sol); }
+
+    .dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+    .dot-all      { background: var(--accent); }
+    .dot-ethereum { background: var(--eth); }
+    .dot-tezos    { background: var(--tez); }
+    .dot-ordinals { background: var(--ord); }
+    .dot-solana   { background: var(--sol); }
+
+    .filter-count { font-size: 0.5rem; color: var(--muted); margin-left: 0.2em; }
 
     /* ── HERO ── */
     #hero {
       position: relative;
-      height: 88vh;
+      height: 86vh;
       display: flex;
       align-items: flex-end;
-      padding: 3rem;
+      padding: 2.5rem;
       overflow: hidden;
       cursor: pointer;
-      animation: fadeIn 0.8s ease 0.1s both;
     }
 
     #hero-bg {
       position: absolute;
       inset: 0;
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       object-fit: cover;
-      transition: transform 8s ease, opacity 0.8s ease;
+      transition: transform 9s ease, opacity 1s ease;
+      opacity: 0;
     }
-
-    #hero:hover #hero-bg { transform: scale(1.03); }
+    #hero-bg.loaded { opacity: 1; }
+    #hero:hover #hero-bg { transform: scale(1.025); }
 
     #hero::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        to top,
-        rgba(10,10,8,0.97) 0%,
-        rgba(10,10,8,0.35) 55%,
-        rgba(10,10,8,0.05) 100%
-      );
+      background: linear-gradient(to top, rgba(10,10,8,0.98) 0%, rgba(10,10,8,0.3) 55%, transparent 100%);
     }
 
     .hero-placeholder {
@@ -162,61 +151,60 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 5rem;
+      font-size: 4rem;
       color: var(--border);
+      letter-spacing: 0.5em;
+      transition: opacity 0.5s;
     }
 
     .hero-info {
       position: relative;
       z-index: 2;
-      max-width: 700px;
-      animation: fadeUp 0.9s ease 0.4s both;
+      max-width: 680px;
+      animation: fadeUp 0.8s ease 0.3s both;
     }
 
     .hero-eyebrow {
-      font-size: 0.62rem;
-      letter-spacing: 0.28em;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
       color: var(--accent);
-      margin-bottom: 0.8rem;
+      margin-bottom: 0.7rem;
     }
 
     .hero-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.2rem, 5.5vw, 4.5rem);
+      font-size: clamp(2rem, 5.5vw, 4.5rem);
       font-weight: 300;
       line-height: 1.06;
-      margin-bottom: 0.8rem;
+      margin-bottom: 0.75rem;
     }
 
     .hero-meta {
       display: flex;
-      gap: 1.2rem;
       align-items: center;
+      gap: 1rem;
       flex-wrap: wrap;
+      transition: opacity 0.4s;
     }
 
-    .hero-artist {
-      font-size: 0.72rem;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-    }
+    .hero-artist { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.06em; }
 
     .chain-badge {
-      font-size: 0.58rem;
-      letter-spacing: 0.2em;
+      font-size: 0.55rem;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      padding: 0.22em 0.65em;
+      padding: 0.2em 0.6em;
       border-radius: 2px;
       border: 1px solid;
     }
-    .chain-badge.ethereum { color: var(--tag-eth); border-color: var(--tag-eth); }
-    .chain-badge.tezos    { color: var(--tag-tez); border-color: var(--tag-tez); }
-    .chain-badge.ordinals { color: var(--tag-ord); border-color: var(--tag-ord); }
-    .chain-badge.solana   { color: var(--tag-sol); border-color: var(--tag-sol); }
+    .chain-badge.ethereum { color: var(--eth); border-color: var(--eth); }
+    .chain-badge.tezos    { color: var(--tez); border-color: var(--tez); }
+    .chain-badge.ordinals { color: var(--ord); border-color: var(--ord); }
+    .chain-badge.solana   { color: var(--sol); border-color: var(--sol); }
 
-    .hero-link {
-      font-size: 0.62rem;
+    .hero-onchain {
+      font-size: 0.6rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--muted);
@@ -225,98 +213,76 @@
       transition: color 0.2s, border-color 0.2s;
       margin-left: auto;
     }
-    .hero-link:hover { color: var(--accent); border-color: var(--accent-dim); }
+    .hero-onchain:hover { color: var(--accent); border-color: var(--accent-dim); }
 
-    .hero-nav {
+    .hero-controls {
       position: absolute;
-      bottom: 3rem;
-      right: 3rem;
+      bottom: 2.5rem; right: 2.5rem;
       z-index: 2;
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.75rem;
+      transition: opacity 0.4s;
     }
 
-    .hero-nav-btn {
+    .hero-btn {
       background: none;
       border: 1px solid var(--border);
       color: var(--muted);
       font-family: 'Courier Prime', monospace;
-      font-size: 0.7rem;
-      padding: 0.4rem 0.8rem;
+      font-size: 0.65rem;
+      padding: 0.4rem 0.85rem;
       cursor: pointer;
       transition: color 0.2s, border-color 0.2s;
+      letter-spacing: 0.1em;
     }
-    .hero-nav-btn:hover { color: var(--text); border-color: var(--muted); }
+    .hero-btn:hover { color: var(--text); border-color: var(--muted); }
 
-    .hero-counter {
-      font-size: 0.62rem;
-      letter-spacing: 0.15em;
-      color: var(--muted);
-    }
+    .hero-counter { font-size: 0.6rem; letter-spacing: 0.18em; color: var(--muted); }
 
     /* ── SECTION HEADER ── */
     .section-header {
       display: flex;
       align-items: center;
       gap: 1.5rem;
-      padding: 2.5rem 3rem 1.5rem;
+      padding: 2rem 2.5rem 1.2rem;
     }
+    .section-label { font-size: 0.6rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+    .section-line  { flex: 1; height: 1px; background: var(--border); }
 
-    .section-label {
-      font-size: 0.62rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-
-    .section-line { flex: 1; height: 1px; background: var(--border); }
-
-    /* ── LOADING ── */
-    #loading {
-      text-align: center;
-      padding: 5rem 3rem;
-      animation: pulse 1.5s ease infinite;
-    }
-
-    .loading-text {
-      font-size: 0.65rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .loading-chains {
-      margin-top: 1rem;
+    /* ── CHAIN STATUS ── */
+    .chain-status-bar {
       display: flex;
-      justify-content: center;
       gap: 2rem;
+      padding: 0.8rem 2.5rem;
+      border-bottom: 1px solid var(--border);
       flex-wrap: wrap;
+      transition: opacity 0.5s;
     }
 
-    .chain-status {
-      font-size: 0.6rem;
-      letter-spacing: 0.15em;
+    .cstatus {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.5em;
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
     }
+    .cstatus .dot { background: var(--border); transition: background 0.3s; }
+    .cstatus.loading .dot { animation: blink 1s ease infinite; }
+    .cstatus.done  .dot   { background: #5a9e6f; }
+    .cstatus.error .dot   { background: #9e5a5a; }
 
-    .chain-status .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
-    .chain-status.loading .dot { background: var(--muted); animation: pulse 1s ease infinite; }
-    .chain-status.done .dot { background: #4caf50; }
-    .chain-status.error .dot { background: #e53e3e; }
-
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
     /* ── GRID ── */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
       gap: 1px;
       background: var(--border);
-      margin: 0 3rem;
+      margin: 0 2.5rem;
       border: 1px solid var(--border);
     }
 
@@ -324,71 +290,75 @@
       background: var(--bg);
       cursor: pointer;
       overflow: hidden;
-      transition: background 0.2s;
-      animation: fadeIn 0.4s ease both;
+      transition: background 0.18s;
+      animation: fadeIn 0.35s ease both;
     }
     .card:hover { background: var(--surface); }
 
     .card-img-wrap {
       aspect-ratio: 1;
       overflow: hidden;
+      background: #0d0d0b;
       position: relative;
-      background: var(--tag-bg);
     }
 
     .card-img {
-      width: 100%;
-      height: 100%;
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
       object-fit: cover;
-      transition: transform 0.6s ease;
       display: block;
+      transition: transform 0.55s ease, opacity 0.3s;
+      opacity: 0;
     }
-    .card:hover .card-img { transform: scale(1.06); }
+    .card-img.loaded { opacity: 1; }
+    .card:hover .card-img { transform: scale(1.07); }
 
-    .card-placeholder {
-      width: 100%;
-      height: 100%;
+    .card-ph {
+      position: absolute;
+      inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--border);
-      font-size: 2.5rem;
+      font-size: 2rem;
+      z-index: 0;
     }
 
-    .pinned-badge {
+    .pinned-pip {
       position: absolute;
-      top: 0.6rem;
-      left: 0.6rem;
-      font-size: 0.55rem;
+      top: 0.5rem; left: 0.5rem;
+      font-size: 0.5rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      padding: 0.2em 0.5em;
       background: var(--accent);
       color: var(--bg);
+      padding: 0.15em 0.5em;
       border-radius: 1px;
+      z-index: 2;
     }
 
     .card-body {
-      padding: 0.85rem 1rem 1rem;
+      padding: 0.8rem 0.9rem 0.9rem;
       border-top: 1px solid var(--border);
     }
 
     .card-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 300;
-      margin-bottom: 0.25rem;
-      line-height: 1.25;
+      line-height: 1.2;
+      margin-bottom: 0.2rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .card-artist {
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       color: var(--muted);
-      letter-spacing: 0.06em;
-      margin-bottom: 0.65rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.6rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -398,60 +368,47 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 0.5rem;
     }
 
+    .card-date { font-size: 0.55rem; color: var(--muted); letter-spacing: 0.05em; }
+
     .card-link {
-      font-size: 0.55rem;
+      font-size: 0.53rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--accent-dim);
       text-decoration: none;
       transition: color 0.2s;
+      flex-shrink: 0;
     }
     .card-link:hover { color: var(--accent); }
 
-    /* ── PAGINATION ── */
-    .pagination {
+    /* ── LOAD MORE ── */
+    .load-more-wrap {
       display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 3rem;
-      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      padding: 3rem 2.5rem;
     }
 
-    .page-btn {
-      padding: 0.5rem 1rem;
+    .load-more-btn {
+      padding: 0.85rem 2.5rem;
       font-family: 'Courier Prime', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.15em;
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
       background: none;
-      border: 1px solid var(--border);
-      color: var(--muted);
+      border: 1px solid var(--accent-dim);
+      color: var(--accent);
       cursor: pointer;
-      transition: all 0.2s;
+      transition: background 0.2s, color 0.2s;
     }
-    .page-btn:hover, .page-btn.active { border-color: var(--accent-dim); color: var(--accent); }
+    .load-more-btn:hover:not(:disabled) { background: var(--accent); color: var(--bg); }
+    .load-more-btn:disabled { opacity: 0.4; cursor: default; }
 
-    /* ── EMPTY ── */
-    .empty {
-      padding: 5rem 3rem;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-    }
-
-    /* ── ERROR BANNER ── */
-    .error-banner {
-      margin: 1rem 3rem;
-      padding: 1rem 1.2rem;
-      border: 1px solid #7a3030;
-      background: #1a0a0a;
-      font-size: 0.65rem;
-      color: #e07070;
-      letter-spacing: 0.08em;
-      line-height: 1.6;
-    }
+    .load-more-meta { font-size: 0.58rem; letter-spacing: 0.12em; color: var(--muted); }
 
     /* ── MODAL ── */
     #modal-overlay {
@@ -462,48 +419,37 @@
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
-      backdrop-filter: blur(6px);
+      padding: 1.5rem;
+      backdrop-filter: blur(8px);
     }
-    #modal-overlay.open {
-      display: flex;
-      animation: fadeIn 0.2s ease;
-    }
+    #modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
 
     .modal {
       display: grid;
-      grid-template-columns: 1fr 360px;
-      max-width: 1020px;
+      grid-template-columns: 1fr 340px;
+      max-width: 980px;
       width: 100%;
-      max-height: 90vh;
+      max-height: 92vh;
       border: 1px solid var(--border);
       background: var(--surface);
       overflow: hidden;
       position: relative;
     }
 
-    .modal-img-wrap {
+    .modal-media {
       overflow: hidden;
-      background: var(--tag-bg);
+      background: #0d0d0b;
       display: flex;
       align-items: center;
       justify-content: center;
+      min-height: 300px;
     }
 
-    .modal-img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      max-height: 80vh;
-    }
-
-    .modal-placeholder {
-      font-size: 5rem;
-      color: var(--border);
-    }
+    .modal-img { width: 100%; height: 100%; object-fit: contain; max-height: 85vh; display: block; }
+    .modal-ph  { font-size: 4rem; color: var(--border); }
 
     .modal-info {
-      padding: 2.5rem 2rem;
+      padding: 2rem 1.8rem;
       display: flex;
       flex-direction: column;
       border-left: 1px solid var(--border);
@@ -511,77 +457,51 @@
       gap: 0;
     }
 
-    .modal-eyebrow {
-      font-size: 0.58rem;
-      letter-spacing: 0.28em;
+    .modal-chain-label {
+      font-size: 0.56rem;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
       margin-bottom: 1.2rem;
     }
-    .modal-eyebrow.ethereum { color: var(--tag-eth); }
-    .modal-eyebrow.tezos    { color: var(--tag-tez); }
-    .modal-eyebrow.ordinals { color: var(--tag-ord); }
-    .modal-eyebrow.solana   { color: var(--tag-sol); }
+    .modal-chain-label.ethereum { color: var(--eth); }
+    .modal-chain-label.tezos    { color: var(--tez); }
+    .modal-chain-label.ordinals { color: var(--ord); }
+    .modal-chain-label.solana   { color: var(--sol); }
 
-    .modal-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.9rem;
-      font-weight: 300;
-      line-height: 1.1;
-      margin-bottom: 0.4rem;
-    }
+    .modal-title  { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; line-height: 1.1; margin-bottom: 0.4rem; }
+    .modal-artist { font-size: 0.7rem; color: var(--muted); margin-bottom: 1.6rem; }
+    .modal-hr     { height: 1px; background: var(--border); margin-bottom: 1.6rem; }
 
-    .modal-artist {
-      font-size: 0.72rem;
-      color: var(--muted);
-      margin-bottom: 1.8rem;
-      letter-spacing: 0.05em;
-    }
-
-    .modal-divider { height: 1px; background: var(--border); margin-bottom: 1.8rem; }
-
-    .modal-field { margin-bottom: 1.3rem; }
-    .modal-field-label {
-      font-size: 0.56rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.35rem;
-    }
-    .modal-field-value {
-      font-size: 0.8rem;
-      color: var(--text);
-      word-break: break-all;
-    }
+    .modal-field         { margin-bottom: 1.2rem; }
+    .modal-field-label   { font-size: 0.54rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.3rem; }
+    .modal-field-value   { font-size: 0.78rem; word-break: break-all; }
 
     .modal-cta {
+      display: block;
       margin-top: auto;
-      padding-top: 1.5rem;
-      display: inline-block;
-      padding: 1.5rem 1.2rem 0.8rem;
+      padding: 0.9rem 1.2rem;
+      text-align: center;
+      border: 1px solid var(--accent-dim);
       color: var(--accent);
       text-decoration: none;
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      border-top: 1px solid var(--border);
       transition: background 0.2s, color 0.2s;
-      text-align: center;
-      margin: auto -2rem -2rem;
     }
     .modal-cta:hover { background: var(--accent); color: var(--bg); }
 
     .modal-close {
       position: absolute;
-      top: 1rem;
-      right: 1rem;
+      top: 0.9rem; right: 0.9rem;
       background: none;
       border: 1px solid var(--border);
       color: var(--muted);
-      cursor: pointer;
       font-family: 'Courier Prime', monospace;
-      font-size: 0.6rem;
+      font-size: 0.58rem;
       letter-spacing: 0.15em;
-      padding: 0.35rem 0.65rem;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
       z-index: 10;
       transition: color 0.2s, border-color 0.2s;
     }
@@ -591,134 +511,111 @@
     footer {
       border-top: 1px solid var(--border);
       margin-top: 4rem;
-      padding: 2rem 3rem;
+      padding: 1.8rem 2.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       color: var(--muted);
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       letter-spacing: 0.1em;
     }
 
     /* ── ANIMATIONS ── */
-    @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
-    @keyframes fadeUp  { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes fadeDown{ from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 768px) {
-      header { padding: 1.1rem 1.5rem; }
-      .filter-bar { padding: 0 1.5rem; }
-      #hero { padding: 1.5rem; height: 65vh; }
-      .hero-nav { bottom: 1.5rem; right: 1.5rem; }
-      .section-header { padding: 1.8rem 1.5rem 1rem; }
-      .grid { margin: 0 1.5rem; grid-template-columns: 1fr 1fr; }
-      .modal { grid-template-columns: 1fr; }
-      .modal-img-wrap { max-height: 45vw; }
-      footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1.5rem; }
+    @media(max-width:768px){
+      header { padding:1.1rem 1.4rem; }
+      #hero  { padding:1.4rem; height:65vh; }
+      .hero-controls { bottom:1.4rem; right:1.4rem; }
+      .chain-status-bar,.section-header { padding-left:1.4rem; padding-right:1.4rem; }
+      .grid  { margin:0 1.4rem; grid-template-columns:1fr 1fr; }
+      .load-more-wrap { padding:2rem 1.4rem; }
+      .modal { grid-template-columns:1fr; }
+      .modal-media { max-height:45vw; }
+      footer { flex-direction:column; gap:0.4rem; padding:1.4rem; text-align:center; }
     }
-
-    @media (max-width: 480px) {
-      .grid { grid-template-columns: 1fr; margin: 0 1rem; }
+    @media(max-width:480px){
+      .grid { grid-template-columns:1fr; margin:0 1rem; }
     }
   </style>
 </head>
 <body>
 
 <header>
-  <a href="#" class="logo">ol1y<span>.art</span></a>
+  <a href="#" class="logo">ol1y<em>.art</em></a>
   <span class="header-stats" id="header-stats">Loading collection…</span>
 </header>
 
-<div class="filter-bar" id="filter-bar" style="display:none">
-  <button class="filter-btn active" data-chain="all" onclick="setFilter('all')">
-    <span class="dot dot-all"></span>All
-  </button>
-  <button class="filter-btn" data-chain="ethereum" onclick="setFilter('ethereum')">
-    <span class="dot dot-ethereum"></span>Ethereum
-  </button>
-  <button class="filter-btn" data-chain="tezos" onclick="setFilter('tezos')">
-    <span class="dot dot-tezos"></span>Tezos
-  </button>
-  <button class="filter-btn" data-chain="ordinals" onclick="setFilter('ordinals')">
-    <span class="dot dot-ordinals"></span>Ordinals
-  </button>
-  <button class="filter-btn" data-chain="solana" onclick="setFilter('solana')">
-    <span class="dot dot-solana"></span>Solana
-  </button>
+<div class="filter-bar">
+  <button class="filter-btn active" data-chain="all"      onclick="setFilter('all')">      <span class="dot dot-all"></span>All           <span class="filter-count" id="fc-all"></span></button>
+  <button class="filter-btn"        data-chain="ethereum" onclick="setFilter('ethereum')"> <span class="dot dot-ethereum"></span>Ethereum   <span class="filter-count" id="fc-ethereum"></span></button>
+  <button class="filter-btn"        data-chain="tezos"    onclick="setFilter('tezos')">    <span class="dot dot-tezos"></span>Tezos        <span class="filter-count" id="fc-tezos"></span></button>
+  <button class="filter-btn"        data-chain="ordinals" onclick="setFilter('ordinals')"> <span class="dot dot-ordinals"></span>Ordinals   <span class="filter-count" id="fc-ordinals"></span></button>
+  <button class="filter-btn"        data-chain="solana"   onclick="setFilter('solana')">   <span class="dot dot-solana"></span>Solana       <span class="filter-count" id="fc-solana"></span></button>
 </div>
 
-<!-- HERO -->
 <section id="hero" onclick="heroClick()">
-  <img id="hero-bg" src="" alt="" style="opacity:0" />
-  <div class="hero-placeholder" id="hero-placeholder">◈</div>
+  <img id="hero-bg" src="" alt="" onload="this.classList.add('loaded')" />
+  <div class="hero-placeholder" id="hero-ph">◈ ◈ ◈</div>
   <div class="hero-info">
-    <p class="hero-eyebrow" id="hero-eyebrow">Featured work</p>
-    <h1 class="hero-title" id="hero-title">Loading collection…</h1>
-    <div class="hero-meta" id="hero-meta" style="opacity:0">
+    <p class="hero-eyebrow" id="hero-eyebrow">Collection</p>
+    <h1 class="hero-title"  id="hero-title">ol1y.art</h1>
+    <div class="hero-meta"  id="hero-meta" style="opacity:0">
       <span class="hero-artist" id="hero-artist"></span>
       <span class="chain-badge" id="hero-chain"></span>
-      <a class="hero-link" id="hero-link" href="#" target="_blank" rel="noopener">View on-chain ↗</a>
+      <a class="hero-onchain" id="hero-link" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">View on-chain ↗</a>
     </div>
   </div>
-  <div class="hero-nav" id="hero-nav" style="opacity:0">
-    <button class="hero-nav-btn" onclick="prevHero(event)">← prev</button>
+  <div class="hero-controls" id="hero-controls" style="opacity:0">
+    <button class="hero-btn" onclick="prevHero(event)">← prev</button>
     <span class="hero-counter" id="hero-counter">— / —</span>
-    <button class="hero-nav-btn" onclick="nextHero(event)">next →</button>
+    <button class="hero-btn" onclick="nextHero(event)">next →</button>
   </div>
 </section>
 
-<!-- LOADING -->
-<div id="loading">
-  <p class="loading-text">Fetching your collection</p>
-  <div class="loading-chains">
-    <span class="chain-status loading" id="status-ethereum">
-      <span class="dot"></span>Ethereum
-    </span>
-    <span class="chain-status loading" id="status-tezos">
-      <span class="dot"></span>Tezos
-    </span>
-    <span class="chain-status loading" id="status-ordinals">
-      <span class="dot"></span>Ordinals
-    </span>
-    <span class="chain-status loading" id="status-solana">
-      <span class="dot"></span>Solana
-    </span>
-  </div>
+<div class="chain-status-bar" id="chain-status-bar">
+  <span class="cstatus loading" id="cs-ethereum"><span class="dot dot-ethereum"></span>Ethereum</span>
+  <span class="cstatus loading" id="cs-tezos"><span class="dot dot-tezos"></span>Tezos</span>
+  <span class="cstatus loading" id="cs-ordinals"><span class="dot dot-ordinals"></span>Ordinals</span>
+  <span class="cstatus loading" id="cs-solana"><span class="dot dot-solana"></span>Solana</span>
 </div>
 
-<div id="errors"></div>
-
-<!-- GRID -->
-<div class="section-header" id="section-header" style="display:none">
+<div class="section-header">
   <span class="section-label">Collection</span>
   <div class="section-line"></div>
-  <span class="section-label" id="count-label"></span>
+  <span class="section-label" id="count-label">—</span>
 </div>
 
-<div class="grid" id="grid" style="display:none"></div>
-<div class="pagination" id="pagination"></div>
+<div class="grid" id="grid"></div>
 
-<!-- MODAL -->
-<div id="modal-overlay" onclick="handleModalClick(event)">
-  <div class="modal" id="modal">
-    <div class="modal-img-wrap" id="modal-img-wrap">
-      <span class="modal-placeholder">◈</span>
-    </div>
+<div class="load-more-wrap" id="load-more-wrap" style="display:none">
+  <button class="load-more-btn" id="load-more-btn" onclick="loadMore()">Load more</button>
+  <span class="load-more-meta" id="load-more-meta"></span>
+</div>
+
+<div id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-media" id="modal-media"><span class="modal-ph">◈</span></div>
     <div class="modal-info">
-      <p class="modal-eyebrow" id="modal-chain-label">Collection</p>
-      <h2 class="modal-title" id="modal-title">—</h2>
-      <p class="modal-artist" id="modal-artist">—</p>
-      <div class="modal-divider"></div>
+      <p class="modal-chain-label" id="m-chain">—</p>
+      <h2 class="modal-title"     id="m-title">—</h2>
+      <p class="modal-artist"     id="m-artist">—</p>
+      <div class="modal-hr"></div>
       <div class="modal-field">
         <p class="modal-field-label">Blockchain</p>
-        <p class="modal-field-value" id="modal-chain-value">—</p>
+        <p class="modal-field-value" id="m-chain-val">—</p>
       </div>
-      <div class="modal-field" id="modal-contract-field" style="display:none">
-        <p class="modal-field-label">Contract / Token</p>
-        <p class="modal-field-value" id="modal-contract">—</p>
+      <div class="modal-field" id="m-token-field">
+        <p class="modal-field-label">Token</p>
+        <p class="modal-field-value" id="m-token">—</p>
       </div>
-      <a class="modal-cta" id="modal-link" href="#" target="_blank" rel="noopener">View on-chain ↗</a>
+      <div class="modal-field" id="m-date-field">
+        <p class="modal-field-label">Acquired</p>
+        <p class="modal-field-value" id="m-date">—</p>
+      </div>
+      <a class="modal-cta" id="m-link" href="#" target="_blank" rel="noopener">View on-chain ↗</a>
     </div>
     <button class="modal-close" onclick="closeModal()">✕ close</button>
   </div>
@@ -730,398 +627,254 @@
 </footer>
 
 <script>
-// ── STATE ──────────────────────────────────────────────────────
-let allNFTs = [];
-let filteredNFTs = [];
-let currentFilter = 'all';
-let heroIndex = 0;
-let currentPage = 1;
-const PAGE_SIZE = CONFIG.pageSize || 24;
+const CHAIN_LABELS = { ethereum:'Ethereum', tezos:'Tezos', ordinals:'Bitcoin Ordinals', solana:'Solana' };
 
-// Chain display names & marketplace links
-const CHAIN_META = {
-  ethereum: { label: 'Ethereum', link: (c,t) => `https://opensea.io/assets/ethereum/${c}/${t}` },
-  tezos:    { label: 'Tezos',    link: (c,t) => `https://objkt.com/tokens/${c}/${t}` },
-  ordinals: { label: 'Ordinals', link: (c,t) => `https://gamma.io/inscription/${c}` },
-  solana:   { label: 'Solana',   link: (c,t) => `https://magiceden.io/item-details/${c}` },
+// Per-chain state tracks cursors and loaded NFTs
+const cs = {
+  ethereum: { nfts:[], cursors:{}, done:{} },
+  tezos:    { nfts:[], cursors:{}, done:{} },
+  ordinals: { nfts:[], cursors:{}, done:{} },
+  solana:   { nfts:[], cursors:{}, done:{} },
 };
 
-// ── HELPERS ────────────────────────────────────────────────────
-function isHidden(nft) {
-  if (CONFIG.hiddenWallets.includes(nft.wallet)) return true;
-  const key = `${nft.contract}:${nft.tokenId}`;
-  if (CONFIG.hidden.includes(key)) return true;
-  if (CONFIG.hidden.includes(nft.contract)) return true;
-  return false;
-}
+let allNFTs = [], displayed = [], currentFilter = 'all', heroIdx = 0, loadingMore = false;
 
-function isPinned(nft) {
-  const key = `${nft.contract}:${nft.tokenId}`;
-  return CONFIG.pinned.includes(key) || CONFIG.pinned.includes(nft.contract);
-}
+const W = (CONFIG.workerUrl || '').replace(/\/$/, '');
 
-function setChainStatus(chain, state) {
-  const el = document.getElementById(`status-${chain}`);
+function isHidden(n) {
+  if (CONFIG.hiddenWallets.includes(n.wallet)) return true;
+  const k = `${n.contract}:${n.tokenId}`;
+  return CONFIG.hidden.includes(k) || CONFIG.hidden.includes(n.contract);
+}
+function isPinned(n) {
+  const k = `${n.contract}:${n.tokenId}`;
+  return CONFIG.pinned.includes(k) || CONFIG.pinned.includes(n.contract);
+}
+function fmtDate(iso) {
+  if (!iso) return null;
+  try { return new Date(iso).toLocaleDateString('en-GB',{year:'numeric',month:'short',day:'numeric'}); }
+  catch { return null; }
+}
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function setCS(chain, state, note) {
+  const el = document.getElementById(`cs-${chain}`);
   if (!el) return;
-  el.className = `chain-status ${state}`;
+  el.className = `cstatus ${state}`;
+  if (note) el.innerHTML = `<span class="dot dot-${chain}"></span>${CHAIN_LABELS[chain]} <span style="opacity:0.6">${note}</span>`;
 }
 
-function addError(msg) {
-  const el = document.getElementById('errors');
-  const div = document.createElement('div');
-  div.className = 'error-banner';
-  div.textContent = msg;
-  el.appendChild(div);
+async function workerFetch(chain, wallet, cursor) {
+  const p = new URLSearchParams({ chain, wallet });
+  if (cursor) { chain === 'ethereum' ? p.set('pageKey', cursor) : p.set('page', cursor); }
+  const r = await fetch(`${W}?${p}`);
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
 }
 
-// ── FETCH: ETHEREUM ────────────────────────────────────────────
-async function fetchEthereum() {
-  if (!CONFIG.alchemyKey || CONFIG.alchemyKey === 'YOUR_ALCHEMY_KEY_HERE') {
-    setChainStatus('ethereum', 'error');
-    addError('Ethereum: Add your Alchemy API key to config.js to load Ethereum NFTs.');
-    return [];
-  }
-  const results = [];
-  for (const wallet of CONFIG.wallets.ethereum) {
-    if (CONFIG.hiddenWallets.includes(wallet)) continue;
+async function fetchChain(chain) {
+  const wallets = (CONFIG.wallets[chain] || []).filter(w => !CONFIG.hiddenWallets.includes(w));
+  if (!wallets.length) { setCS(chain, 'done', '—'); return; }
+  setCS(chain, 'loading');
+  let count = 0;
+  for (const wallet of wallets) {
     try {
-      let pageKey = null;
-      do {
-        const url = new URL(`https://eth-mainnet.g.alchemy.com/nft/v3/${CONFIG.alchemyKey}/getNFTsForOwner`);
-        url.searchParams.set('owner', wallet);
-        url.searchParams.set('withMetadata', 'true');
-        url.searchParams.set('pageSize', '100');
-        if (pageKey) url.searchParams.set('pageKey', pageKey);
-        const r = await fetch(url);
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const data = await r.json();
-        for (const nft of (data.ownedNfts || [])) {
-          results.push({
-            chain: 'ethereum',
-            wallet,
-            title: nft.name || nft.contract?.name || 'Untitled',
-            artist: nft.contract?.name || '',
-            image: nft.image?.cachedUrl || nft.image?.thumbnailUrl || nft.image?.originalUrl || '',
-            contract: nft.contract?.address || '',
-            tokenId: nft.tokenId || '',
-            link: CHAIN_META.ethereum.link(nft.contract?.address, nft.tokenId),
-          });
-        }
-        pageKey = data.pageKey || null;
-      } while (pageKey);
+      const data = await workerFetch(chain, wallet, chain === 'ethereum' ? null : 1);
+      const fresh = (data.nfts || []).filter(n => !isHidden(n));
+      cs[chain].nfts.push(...fresh);
+      allNFTs.push(...fresh);
+      count += fresh.length;
+      if (data.nextPageKey) cs[chain].cursors[wallet] = data.nextPageKey;
+      else if (data.nextPage) cs[chain].cursors[wallet] = data.nextPage;
+      else cs[chain].done[wallet] = true;
+      if (allNFTs.length <= fresh.length) renderHero(0);
     } catch(e) {
-      addError(`Ethereum wallet ${wallet.slice(0,8)}…: ${e.message}`);
+      console.error(chain, wallet, e);
+      setCS(chain, 'error', e.message);
+      return;
     }
   }
-  setChainStatus('ethereum', 'done');
-  return results;
+  setCS(chain, 'done', `${count} loaded`);
+  rebuildDisplay();
 }
 
-// ── FETCH: TEZOS ───────────────────────────────────────────────
-async function fetchTezos() {
-  const results = [];
-  for (const wallet of CONFIG.wallets.tezos) {
-    if (CONFIG.hiddenWallets.includes(wallet)) continue;
-    try {
-      let offset = 0, limit = 50, more = true;
-      while (more) {
-        const url = `https://api.tzkt.io/v1/tokens/balances?account=${wallet}&balance.gt=0&limit=${limit}&offset=${offset}&token.standard=fa2`;
-        const r = await fetch(url);
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const data = await r.json();
-        for (const item of data) {
-          const meta = item.token?.metadata || {};
-          const imgRaw = meta.thumbnailUri || meta.displayUri || meta.artifactUri || '';
-          const image = imgRaw.replace('ipfs://', 'https://ipfs.io/ipfs/');
-          results.push({
-            chain: 'tezos',
-            wallet,
-            title: meta.name || 'Untitled',
-            artist: meta.creators?.[0] || item.token?.contract?.alias || '',
-            image,
-            contract: item.token?.contract?.address || '',
-            tokenId: item.token?.tokenId || '',
-            link: CHAIN_META.tezos.link(item.token?.contract?.address, item.token?.tokenId),
-          });
-        }
-        more = data.length === limit;
-        offset += limit;
-      }
-    } catch(e) {
-      addError(`Tezos wallet ${wallet.slice(0,8)}…: ${e.message}`);
-    }
-  }
-  setChainStatus('tezos', 'done');
-  return results;
+function byDate(a, b) {
+  if (!a.acquired && !b.acquired) return 0;
+  if (!a.acquired) return 1;
+  if (!b.acquired) return -1;
+  return new Date(b.acquired) - new Date(a.acquired);
 }
 
-// ── FETCH: ORDINALS ────────────────────────────────────────────
-async function fetchOrdinals() {
-  const results = [];
-  for (const wallet of CONFIG.wallets.ordinals) {
-    if (CONFIG.hiddenWallets.includes(wallet)) continue;
-    try {
-      let offset = 0, limit = 60, more = true;
-      while (more) {
-        const r = await fetch(`https://api.hiro.so/ordinals/v1/inscriptions?address=${wallet}&limit=${limit}&offset=${offset}`);
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        const data = await r.json();
-        const items = data.results || [];
-        for (const ins of items) {
-          const isImg = ins.mime_type?.startsWith('image/');
-          results.push({
-            chain: 'ordinals',
-            wallet,
-            title: ins.meta?.name || `Inscription #${ins.number}`,
-            artist: ins.meta?.collection_name || '',
-            image: isImg ? `https://ord.io/${ins.id}` : '',
-            contract: ins.id,
-            tokenId: String(ins.number),
-            link: `https://gamma.io/inscription/${ins.id}`,
-          });
-        }
-        more = items.length === limit;
-        offset += limit;
-      }
-    } catch(e) {
-      addError(`Ordinals wallet ${wallet.slice(0,8)}…: ${e.message}`);
-    }
-  }
-  setChainStatus('ordinals', 'done');
-  return results;
+function rebuildDisplay() {
+  const base = currentFilter === 'all' ? allNFTs : allNFTs.filter(n => n.chain === currentFilter);
+  displayed = [...base.filter(isPinned).sort(byDate), ...base.filter(n => !isPinned(n)).sort(byDate)];
+  renderGrid();
+  updateCounts();
+  updateLoadMore();
 }
 
-// ── FETCH: SOLANA ──────────────────────────────────────────────
-async function fetchSolana() {
-  const results = [];
-  for (const wallet of CONFIG.wallets.solana) {
-    if (CONFIG.hiddenWallets.includes(wallet)) continue;
-    try {
-      // Use Helius free API (no key needed for basic DAS)
-      const r = await fetch(`https://mainnet.helius-rpc.com/?api-key=demo`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0', id: 1,
-          method: 'getAssetsByOwner',
-          params: { ownerAddress: wallet, page: 1, limit: 1000, displayOptions: { showFungible: false } }
-        })
-      });
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      const data = await r.json();
-      for (const asset of (data.result?.items || [])) {
-        if (asset.interface === 'FungibleToken') continue;
-        const meta = asset.content?.metadata || {};
-        const image = asset.content?.links?.image || asset.content?.files?.[0]?.cdn_uri || '';
-        results.push({
-          chain: 'solana',
-          wallet,
-          title: meta.name || 'Untitled',
-          artist: meta.symbol || asset.grouping?.[0]?.collection_metadata?.name || '',
-          image,
-          contract: asset.id,
-          tokenId: asset.id,
-          link: `https://magiceden.io/item-details/${asset.id}`,
-        });
-      }
-    } catch(e) {
-      addError(`Solana wallet ${wallet.slice(0,8)}…: ${e.message}`);
-    }
-  }
-  setChainStatus('solana', 'done');
-  return results;
+function updateCounts() {
+  const t = allNFTs.length;
+  document.getElementById('header-stats').textContent = `${t} work${t!==1?'s':''} across ${Object.keys(CONFIG.wallets).length} chains`;
+  document.getElementById('count-label').textContent  = `${displayed.length} work${displayed.length!==1?'s':''}${currentFilter!=='all'?' on '+CHAIN_LABELS[currentFilter]:''}`;
+  ['ethereum','tezos','ordinals','solana'].forEach(c => {
+    const n = allNFTs.filter(x=>x.chain===c).length;
+    const el = document.getElementById(`fc-${c}`);
+    if (el) el.textContent = n ? `(${n})` : '';
+  });
+  const ae = document.getElementById('fc-all');
+  if (ae) ae.textContent = t ? `(${t})` : '';
 }
 
-// ── RENDER: HERO ───────────────────────────────────────────────
-const pinnedNFTs = () => allNFTs.filter(isPinned);
-const heroPool   = () => pinnedNFTs().length ? pinnedNFTs() : allNFTs.slice(0, 12);
-
-function renderHero(idx) {
-  const pool = heroPool();
-  if (!pool.length) return;
-  heroIndex = (idx + pool.length) % pool.length;
-  const nft = pool[heroIndex];
-
-  const bg = document.getElementById('hero-bg');
-  if (nft.image) {
-    bg.src = nft.image;
-    bg.style.opacity = '1';
-    document.getElementById('hero-placeholder').style.display = 'none';
-  } else {
-    bg.style.opacity = '0';
-    document.getElementById('hero-placeholder').style.display = 'flex';
-  }
-
-  document.getElementById('hero-title').textContent = nft.title;
-  document.getElementById('hero-artist').textContent = nft.artist || 'Unknown artist';
-
-  const chainEl = document.getElementById('hero-chain');
-  chainEl.textContent = CHAIN_META[nft.chain]?.label || nft.chain;
-  chainEl.className = `chain-badge ${nft.chain}`;
-
-  document.getElementById('hero-link').href = nft.link;
-
-  const eyebrow = document.getElementById('hero-eyebrow');
-  eyebrow.textContent = isPinned(nft) ? 'Pinned work' : 'Featured work';
-
-  document.getElementById('hero-counter').textContent =
-    `${String(heroIndex + 1).padStart(2,'0')} / ${String(pool.length).padStart(2,'0')}`;
-
-  document.getElementById('hero-meta').style.opacity = '1';
-  document.getElementById('hero-nav').style.opacity = '1';
-}
-
-function prevHero(e) { e.stopPropagation(); renderHero(heroIndex - 1); }
-function nextHero(e) { e.stopPropagation(); renderHero(heroIndex + 1); }
-function heroClick() { openModal(heroPool()[heroIndex]); }
-
-// ── RENDER: GRID ───────────────────────────────────────────────
 function renderGrid() {
-  filteredNFTs = currentFilter === 'all'
-    ? allNFTs
-    : allNFTs.filter(n => n.chain === currentFilter);
-
-  const total = filteredNFTs.length;
-  document.getElementById('count-label').textContent = `${total} work${total !== 1 ? 's' : ''}`;
-  document.getElementById('header-stats').textContent =
-    `${allNFTs.length} works across ${Object.keys(CONFIG.wallets).length} chains`;
-
-  const grid = document.getElementById('grid');
-  const totalPages = PAGE_SIZE > 0 ? Math.ceil(total / PAGE_SIZE) : 1;
-  currentPage = Math.min(currentPage, totalPages || 1);
-
-  const start = PAGE_SIZE > 0 ? (currentPage - 1) * PAGE_SIZE : 0;
-  const page  = PAGE_SIZE > 0 ? filteredNFTs.slice(start, start + PAGE_SIZE) : filteredNFTs;
-
-  grid.innerHTML = page.map((nft, i) => {
-    const pinned = isPinned(nft);
-    return `
-    <div class="card" onclick="openModal(allNFTs[${allNFTs.indexOf(nft)}])" style="animation-delay:${Math.min(i,12)*0.04}s">
+  document.getElementById('grid').innerHTML = displayed.map((nft,i) => {
+    const ds = fmtDate(nft.acquired);
+    return `<div class="card" onclick="openModal(${i})" style="animation-delay:${Math.min(i,16)*0.03}s">
       <div class="card-img-wrap">
-        ${nft.image
-          ? `<img class="card-img" src="${nft.image}" alt="${escHtml(nft.title)}" loading="lazy" onerror="this.style.display='none'" />`
-          : `<div class="card-placeholder">◈</div>`}
-        ${pinned ? `<span class="pinned-badge">Pinned</span>` : ''}
+        ${nft.image ? `<img class="card-img" src="${esc(nft.image)}" alt="${esc(nft.title)}" loading="lazy" onload="this.classList.add('loaded')" onerror="this.style.display='none'">` : ''}
+        <div class="card-ph">◈</div>
+        ${isPinned(nft) ? `<span class="pinned-pip">Pinned</span>` : ''}
       </div>
       <div class="card-body">
-        <p class="card-title">${escHtml(nft.title)}</p>
-        <p class="card-artist">${escHtml(nft.artist || 'Unknown artist')}</p>
+        <p class="card-title">${esc(nft.title)}</p>
+        <p class="card-artist">${esc(nft.artist||'Unknown artist')}</p>
         <div class="card-footer">
-          <span class="chain-badge ${nft.chain}">${CHAIN_META[nft.chain]?.label || nft.chain}</span>
-          <a class="card-link" href="${nft.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">On-chain ↗</a>
+          <span class="chain-badge ${nft.chain}">${CHAIN_LABELS[nft.chain]||nft.chain}</span>
+          ${ds ? `<span class="card-date">${ds}</span>` : ''}
+          <a class="card-link" href="${esc(nft.link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">↗</a>
         </div>
       </div>
     </div>`;
   }).join('');
+}
 
-  // Pagination
-  const pag = document.getElementById('pagination');
-  if (totalPages > 1) {
-    let btns = '';
-    if (currentPage > 1) btns += `<button class="page-btn" onclick="goPage(${currentPage-1})">← prev</button>`;
-    for (let p = 1; p <= totalPages; p++) {
-      if (p === 1 || p === totalPages || Math.abs(p - currentPage) <= 2)
-        btns += `<button class="page-btn${p===currentPage?' active':''}" onclick="goPage(${p})">${p}</button>`;
-      else if (Math.abs(p - currentPage) === 3)
-        btns += `<span class="page-btn" style="border:none;cursor:default">…</span>`;
+function hasMorePages() {
+  const chains = currentFilter === 'all' ? Object.keys(CONFIG.wallets) : [currentFilter];
+  return chains.some(chain =>
+    (CONFIG.wallets[chain]||[]).some(w => cs[chain].cursors[w] && !cs[chain].done[w])
+  );
+}
+
+function updateLoadMore() {
+  const wrap = document.getElementById('load-more-wrap');
+  const btn  = document.getElementById('load-more-btn');
+  const meta = document.getElementById('load-more-meta');
+  const more = hasMorePages();
+  wrap.style.display = (displayed.length > 0) ? 'flex' : 'none';
+  btn.style.display  = more ? 'block' : 'none';
+  btn.disabled       = loadingMore;
+  btn.textContent    = loadingMore ? 'Loading…' : 'Load more';
+  meta.textContent   = more ? `${displayed.length} shown` : `All ${displayed.length} works loaded`;
+}
+
+async function loadMore() {
+  if (loadingMore) return;
+  loadingMore = true;
+  updateLoadMore();
+  const chains = currentFilter === 'all' ? Object.keys(CONFIG.wallets) : [currentFilter];
+  for (const chain of chains) {
+    for (const wallet of (CONFIG.wallets[chain]||[])) {
+      const cursor = cs[chain].cursors[wallet];
+      if (!cursor || cs[chain].done[wallet]) continue;
+      try {
+        const data  = await workerFetch(chain, wallet, cursor);
+        const fresh = (data.nfts||[]).filter(n=>!isHidden(n));
+        cs[chain].nfts.push(...fresh);
+        allNFTs.push(...fresh);
+        if (data.nextPageKey) cs[chain].cursors[wallet] = data.nextPageKey;
+        else if (data.nextPage) cs[chain].cursors[wallet] = data.nextPage;
+        else { delete cs[chain].cursors[wallet]; cs[chain].done[wallet] = true; }
+      } catch(e) { console.error('loadMore', chain, wallet, e); }
     }
-    if (currentPage < totalPages) btns += `<button class="page-btn" onclick="goPage(${currentPage+1})">next →</button>`;
-    pag.innerHTML = btns;
-  } else {
-    pag.innerHTML = '';
   }
+  loadingMore = false;
+  rebuildDisplay();
 }
 
-function goPage(p) {
-  currentPage = p;
-  renderGrid();
-  document.getElementById('section-header').scrollIntoView({ behavior: 'smooth' });
+// HERO
+function heroPool() { const p = allNFTs.filter(isPinned); return p.length ? p : allNFTs.slice(0,20); }
+function renderHero(idx) {
+  const pool = heroPool();
+  if (!pool.length) return;
+  heroIdx = ((idx%pool.length)+pool.length)%pool.length;
+  const nft = pool[heroIdx];
+  const bg = document.getElementById('hero-bg');
+  if (nft.image) { bg.src = nft.image; document.getElementById('hero-ph').style.opacity='0'; }
+  else { bg.src=''; document.getElementById('hero-ph').style.opacity='1'; }
+  document.getElementById('hero-title').textContent   = nft.title;
+  document.getElementById('hero-artist').textContent  = nft.artist||'Unknown artist';
+  document.getElementById('hero-eyebrow').textContent = isPinned(nft)?'Pinned work':'Featured work';
+  const cb = document.getElementById('hero-chain');
+  cb.textContent = CHAIN_LABELS[nft.chain]||nft.chain;
+  cb.className   = `chain-badge ${nft.chain}`;
+  document.getElementById('hero-link').href = nft.link;
+  document.getElementById('hero-meta').style.opacity     = '1';
+  document.getElementById('hero-controls').style.opacity = '1';
+  document.getElementById('hero-counter').textContent =
+    `${String(heroIdx+1).padStart(2,'0')} / ${String(pool.length).padStart(2,'0')}`;
 }
+function prevHero(e) { e.stopPropagation(); renderHero(heroIdx-1); }
+function nextHero(e) { e.stopPropagation(); renderHero(heroIdx+1); }
+function heroClick()  { const p=heroPool(); if(p.length) openModal(displayed.indexOf(p[heroIdx])); }
 
+// FILTER
 function setFilter(chain) {
   currentFilter = chain;
-  currentPage = 1;
-  document.querySelectorAll('.filter-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.chain === chain);
-  });
-  renderGrid();
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.chain===chain));
+  rebuildDisplay();
 }
 
-// ── MODAL ──────────────────────────────────────────────────────
-let currentModalNFT = null;
-
-function openModal(nft) {
-  currentModalNFT = nft;
-  const wrap = document.getElementById('modal-img-wrap');
-  if (nft.image) {
-    wrap.innerHTML = `<img class="modal-img" src="${nft.image}" alt="${escHtml(nft.title)}" />`;
-  } else {
-    wrap.innerHTML = `<span class="modal-placeholder">◈</span>`;
-  }
-
-  const chainLabel = document.getElementById('modal-chain-label');
-  chainLabel.textContent = CHAIN_META[nft.chain]?.label || nft.chain;
-  chainLabel.className = `modal-eyebrow ${nft.chain}`;
-
-  document.getElementById('modal-title').textContent = nft.title;
-  document.getElementById('modal-artist').textContent = nft.artist || 'Unknown artist';
-  document.getElementById('modal-chain-value').textContent = CHAIN_META[nft.chain]?.label || nft.chain;
-
-  const contractField = document.getElementById('modal-contract-field');
-  if (nft.contract && nft.tokenId) {
-    contractField.style.display = 'block';
-    document.getElementById('modal-contract').textContent = nft.tokenId
-      ? `${nft.contract.slice(0,14)}… / #${nft.tokenId}`
-      : nft.contract;
-  } else {
-    contractField.style.display = 'none';
-  }
-
-  document.getElementById('modal-link').href = nft.link;
+// MODAL
+function openModal(idx) {
+  if (idx<0||idx>=displayed.length) return;
+  const nft = displayed[idx];
+  const media = document.getElementById('modal-media');
+  media.innerHTML = nft.image
+    ? `<img class="modal-img" src="${esc(nft.image)}" alt="${esc(nft.title)}">`
+    : `<span class="modal-ph">◈</span>`;
+  const cl = document.getElementById('m-chain');
+  cl.textContent = CHAIN_LABELS[nft.chain]||nft.chain;
+  cl.className   = `modal-chain-label ${nft.chain}`;
+  document.getElementById('m-title').textContent     = nft.title;
+  document.getElementById('m-artist').textContent    = nft.artist||'Unknown artist';
+  document.getElementById('m-chain-val').textContent = CHAIN_LABELS[nft.chain]||nft.chain;
+  const tf = document.getElementById('m-token-field');
+  if (nft.tokenId||nft.contract) {
+    tf.style.display='block';
+    document.getElementById('m-token').textContent = nft.tokenId
+      ? `${(nft.contract||'').slice(0,14)}… / #${nft.tokenId}` : nft.contract;
+  } else tf.style.display='none';
+  const df = document.getElementById('m-date-field');
+  const ds = fmtDate(nft.acquired);
+  if (ds) { df.style.display='block'; document.getElementById('m-date').textContent=ds; }
+  else df.style.display='none';
+  document.getElementById('m-link').href = nft.link;
   document.getElementById('modal-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow='hidden';
 }
-
 function closeModal() {
   document.getElementById('modal-overlay').classList.remove('open');
-  document.body.style.overflow = '';
+  document.body.style.overflow='';
 }
+function handleOverlayClick(e) { if(e.target===document.getElementById('modal-overlay')) closeModal(); }
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
 
-function handleModalClick(e) {
-  if (e.target === document.getElementById('modal-overlay')) closeModal();
-}
-
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-// ── UTILITY ────────────────────────────────────────────────────
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ── INIT ────────────────────────────────────────────────────────
+// INIT
 async function init() {
-  const [eth, tez, ord, sol] = await Promise.all([
-    fetchEthereum(),
-    fetchTezos(),
-    fetchOrdinals(),
-    fetchSolana(),
+  await Promise.all([
+    fetchChain('ethereum'),
+    fetchChain('tezos'),
+    fetchChain('ordinals'),
+    fetchChain('solana'),
   ]);
-
-  // Merge, filter hidden, sort pinned first
-  const raw = [...eth, ...tez, ...ord, ...sol].filter(n => !isHidden(n));
-  allNFTs = [
-    ...raw.filter(isPinned),
-    ...raw.filter(n => !isPinned(n)),
-  ];
-
-  // Hide loading, show UI
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('section-header').style.display = 'flex';
-  document.getElementById('grid').style.display = 'grid';
-  if (CONFIG.showChainFilter) document.getElementById('filter-bar').style.display = 'flex';
-
-  renderHero(0);
-  renderGrid();
+  // Fade out status bar
+  setTimeout(() => {
+    const bar = document.getElementById('chain-status-bar');
+    bar.style.transition = 'opacity 0.6s';
+    bar.style.opacity = '0';
+    setTimeout(() => bar.style.display='none', 600);
+  }, 2500);
 }
 
 init();
