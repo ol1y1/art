@@ -12,7 +12,7 @@ const CONFIG = {
   // ── WORKER URL ───────────────────────────────────────────────
   // After deploying your Worker, paste its URL here.
   // It will look like: https://ol1y-art-api.YOUR-SUBDOMAIN.workers.dev
-  workerUrl: "https://ol1y-art-api.YOUR-SUBDOMAIN.workers.dev",
+  workerUrl: "https://ol1y-art-api.ol1yartist1.workers.dev",
 
   // ── WALLETS ──────────────────────────────────────────────────
   wallets: {
