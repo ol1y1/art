@@ -5,332 +5,236 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ol1y.art — Collection</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg:       #0a0a0a;
-      --surface:  #141414;
-      --border:   #252525;
-      --border2:  #333;
-      --text:     #e8e4d8;
-      --muted:    #666;
-      --muted2:   #444;
-      --accent:   #bfa96e;
-      --accent-dim:#6b5e38;
-      --drop-bg:  #1a1a1a;
+      --bg:#0a0a0a; --surface:#141414; --border:#252525; --border2:#333;
+      --text:#e8e4d8; --muted:#666; --muted2:#444;
+      --accent:#bfa96e; --accent-dim:#6b5e38; --drop-bg:#1a1a1a;
     }
-
     html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Courier Prime', monospace;
-      min-height: 100vh;
-    }
+    body { background:var(--bg); color:var(--text); font-family:'Courier Prime',monospace; min-height:100vh; }
 
     /* ── HEADER ── */
     header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.2rem 2.5rem;
-      border-bottom: 1px solid var(--border);
-      position: sticky; top: 0;
-      background: rgba(10,10,10,0.97);
-      backdrop-filter: blur(16px);
-      z-index: 200;
+      display:flex; justify-content:space-between; align-items:center;
+      padding:1.2rem 2.5rem; border-bottom:1px solid var(--border);
+      position:sticky; top:0; background:rgba(10,10,10,0.97);
+      backdrop-filter:blur(16px); z-index:200;
+    }
+    .logo { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:300; letter-spacing:0.1em; color:var(--text); text-decoration:none; }
+    .logo em { color:var(--accent); font-style:italic; }
+    .header-count { font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); }
+
+    /* ── HERO ── */
+    #hero {
+      position:relative; height:50vh; min-height:320px;
+      overflow:hidden; cursor:pointer;
     }
 
-    .logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem; font-weight: 300;
-      letter-spacing: 0.1em;
-      color: var(--text); text-decoration: none;
-      display: flex; align-items: center; gap: 0.8rem;
+    .hero-slide {
+      position:absolute; inset:0;
+      opacity:0; transition:opacity 1s ease;
+      pointer-events:none;
     }
-    .logo em { color: var(--accent); font-style: italic; }
+    .hero-slide.active { opacity:1; pointer-events:auto; }
 
-    .header-count {
-      font-size: 0.58rem; letter-spacing: 0.2em;
-      text-transform: uppercase; color: var(--muted);
+    .hero-slide-bg {
+      position:absolute; inset:0;
+      width:100%; height:100%; object-fit:cover;
+      transition:transform 10s ease;
     }
+    .hero-slide.active .hero-slide-bg { transform:scale(1.03); }
+
+    .hero-slide::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(to top, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.45) 50%, rgba(10,10,10,0.15) 100%);
+    }
+
+    .hero-ph-bg {
+      position:absolute; inset:0; background:var(--surface);
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Cormorant Garamond',serif; font-size:5rem;
+      color:var(--border2); font-weight:300;
+    }
+
+    .hero-content {
+      position:absolute; inset:0; z-index:2;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      text-align:center; padding:2rem;
+    }
+
+    .hero-tagline {
+      font-size:0.6rem; letter-spacing:0.3em; text-transform:uppercase;
+      color:var(--accent); margin-bottom:0.8rem;
+      opacity:0; transform:translateY(8px);
+      transition:opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
+    }
+    .hero-slide.active .hero-tagline { opacity:1; transform:translateY(0); }
+
+    .hero-title {
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(1.8rem,5vw,3.8rem); font-weight:300;
+      line-height:1.1; margin-bottom:0.5rem;
+      opacity:0; transform:translateY(10px);
+      transition:opacity 0.6s ease 0.35s, transform 0.6s ease 0.35s;
+    }
+    .hero-slide.active .hero-title { opacity:1; transform:translateY(0); }
+
+    .hero-artist {
+      font-size:0.7rem; color:rgba(232,228,216,0.7);
+      letter-spacing:0.1em; margin-bottom:1.2rem;
+      opacity:0; transform:translateY(8px);
+      transition:opacity 0.6s ease 0.45s, transform 0.6s ease 0.45s;
+    }
+    .hero-slide.active .hero-artist { opacity:1; transform:translateY(0); }
+
+    .hero-cta {
+      font-size:0.55rem; letter-spacing:0.22em; text-transform:uppercase;
+      padding:0.55rem 1.4rem; border:1px solid rgba(191,169,110,0.5);
+      color:var(--accent); text-decoration:none;
+      transition:background 0.2s, color 0.2s;
+      opacity:0; transition:opacity 0.6s ease 0.55s, background 0.2s, color 0.2s;
+    }
+    .hero-slide.active .hero-cta { opacity:1; }
+    .hero-cta:hover { background:var(--accent); color:var(--bg); }
+
+    /* Hero nav */
+    .hero-nav {
+      position:absolute; bottom:1.2rem; left:0; right:0;
+      z-index:3; display:flex; align-items:center;
+      justify-content:center; gap:1rem;
+    }
+
+    .hero-nav-btn {
+      background:none; border:1px solid rgba(255,255,255,0.2);
+      color:rgba(255,255,255,0.5); font-family:'Courier Prime',monospace;
+      font-size:0.6rem; padding:0.35rem 0.75rem;
+      cursor:pointer; transition:all 0.2s; letter-spacing:0.1em;
+    }
+    .hero-nav-btn:hover { color:#fff; border-color:rgba(255,255,255,0.5); }
+
+    .hero-dots { display:flex; gap:0.5rem; align-items:center; }
+    .hero-dot {
+      width:5px; height:5px; border-radius:50%;
+      background:rgba(255,255,255,0.25); cursor:pointer;
+      transition:background 0.3s, transform 0.3s;
+    }
+    .hero-dot.active { background:var(--accent); transform:scale(1.3); }
+
+    .hero-counter {
+      font-size:0.55rem; letter-spacing:0.2em; color:rgba(255,255,255,0.4);
+    }
+
+    /* Scroll hint */
+    .hero-scroll {
+      position:absolute; bottom:1.2rem; right:2rem; z-index:3;
+      font-size:0.55rem; letter-spacing:0.2em; text-transform:uppercase;
+      color:rgba(255,255,255,0.3);
+      display:flex; flex-direction:column; align-items:center; gap:0.3rem;
+    }
+    .hero-scroll-arrow { animation:bounce 2s ease infinite; }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(4px)} }
 
     /* ── FILTER BAR ── */
     .filter-bar {
-      padding: 1.2rem 2.5rem 1rem;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg);
-      position: sticky; top: 57px;
-      z-index: 100;
+      padding:1.2rem 2.5rem 1rem;
+      border-bottom:1px solid var(--border);
+      background:var(--bg);
+      position:sticky; top:57px; z-index:100;
     }
+    .search-row { display:flex; align-items:center; gap:0.6rem; margin-bottom:0.9rem; }
+    .search-icon { color:var(--muted); font-size:1rem; flex-shrink:0; }
+    .search-input { background:none; border:none; outline:none; font-family:'Courier Prime',monospace; font-size:0.72rem; letter-spacing:0.06em; color:var(--text); width:100%; max-width:420px; }
+    .search-input::placeholder { color:var(--muted2); }
+    .dropdowns-row { display:flex; flex-wrap:wrap; gap:0.5rem; }
 
-    .search-row {
-      display: flex; align-items: center; gap: 0.6rem;
-      margin-bottom: 0.9rem;
-    }
-
-    .search-icon { color: var(--muted); font-size: 1rem; flex-shrink: 0; }
-
-    .search-input {
-      background: none; border: none; outline: none;
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.72rem; letter-spacing: 0.06em;
-      color: var(--text); width: 100%; max-width: 420px;
-    }
-    .search-input::placeholder { color: var(--muted2); }
-
-    .dropdowns-row {
-      display: flex; flex-wrap: wrap; gap: 0.5rem;
-    }
-
-    /* Custom dropdown */
-    .dd-wrap {
-      position: relative;
-    }
-
-    .dd-btn {
-      display: flex; align-items: center; gap: 0.5rem;
-      padding: 0.45rem 0.9rem;
-      background: var(--drop-bg);
-      border: 1px solid var(--border2);
-      border-radius: 4px;
-      color: var(--muted);
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
-      cursor: pointer;
-      transition: border-color 0.2s, color 0.2s;
-      white-space: nowrap;
-      min-width: 130px; justify-content: space-between;
-    }
-    .dd-btn:hover { border-color: var(--muted); color: var(--text); }
-    .dd-btn.active { border-color: var(--accent-dim); color: var(--accent); }
-
-    .dd-arrow {
-      font-size: 0.5rem; opacity: 0.6;
-      transition: transform 0.2s;
-    }
-    .dd-wrap.open .dd-arrow { transform: rotate(180deg); }
-
-    .dd-menu {
-      position: absolute; top: calc(100% + 4px); left: 0;
-      background: var(--surface);
-      border: 1px solid var(--border2);
-      border-radius: 4px;
-      min-width: 180px; max-width: 260px;
-      max-height: 320px; overflow-y: auto;
-      z-index: 300;
-      display: none;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-    }
-    .dd-wrap.open .dd-menu { display: block; animation: fadeIn 0.15s ease; }
-
-    .dd-item {
-      padding: 0.55rem 1rem;
-      font-size: 0.62rem; letter-spacing: 0.1em;
-      color: var(--muted);
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .dd-item:last-child { border-bottom: none; }
-    .dd-item:hover { background: var(--drop-bg); color: var(--text); }
-    .dd-item.selected { color: var(--accent); background: var(--drop-bg); }
-
-    .clear-btn {
-      padding: 0.45rem 0.9rem;
-      background: none; border: 1px solid var(--border);
-      border-radius: 4px; color: var(--muted);
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
-      cursor: pointer; transition: color 0.2s, border-color 0.2s;
-    }
-    .clear-btn:hover { color: var(--text); border-color: var(--muted); }
+    /* Dropdowns */
+    .dd-wrap { position:relative; }
+    .dd-btn { display:flex; align-items:center; gap:0.5rem; padding:0.45rem 0.9rem; background:var(--drop-bg); border:1px solid var(--border2); border-radius:4px; color:var(--muted); font-family:'Courier Prime',monospace; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; transition:border-color 0.2s,color 0.2s; white-space:nowrap; min-width:130px; justify-content:space-between; }
+    .dd-btn:hover { border-color:var(--muted); color:var(--text); }
+    .dd-btn.active { border-color:var(--accent-dim); color:var(--accent); }
+    .dd-arrow { font-size:0.5rem; opacity:0.6; transition:transform 0.2s; }
+    .dd-wrap.open .dd-arrow { transform:rotate(180deg); }
+    .dd-menu { position:absolute; top:calc(100% + 4px); left:0; background:var(--surface); border:1px solid var(--border2); border-radius:4px; min-width:180px; max-width:260px; max-height:300px; overflow-y:auto; z-index:300; display:none; box-shadow:0 8px 32px rgba(0,0,0,0.5); }
+    .dd-wrap.open .dd-menu { display:block; animation:fadeIn 0.15s ease; }
+    .dd-item { padding:0.55rem 1rem; font-size:0.62rem; letter-spacing:0.08em; color:var(--muted); cursor:pointer; transition:background 0.15s,color 0.15s; border-bottom:1px solid var(--border); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .dd-item:last-child { border-bottom:none; }
+    .dd-item:hover { background:var(--drop-bg); color:var(--text); }
+    .dd-item.selected { color:var(--accent); background:var(--drop-bg); }
+    .clear-btn { padding:0.45rem 0.9rem; background:none; border:1px solid var(--border); border-radius:4px; color:var(--muted); font-family:'Courier Prime',monospace; font-size:0.58rem; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; transition:color 0.2s,border-color 0.2s; }
+    .clear-btn:hover { color:var(--text); border-color:var(--muted); }
 
     /* ── GRID ── */
-    .grid-wrap { padding: 2rem 2.5rem; }
+    .grid-wrap { padding:2rem 2.5rem; }
+    .showing-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; }
+    .showing-label { font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); }
+    .sort-select { background:var(--drop-bg); border:1px solid var(--border2); border-radius:4px; color:var(--muted); font-family:'Courier Prime',monospace; font-size:0.58rem; letter-spacing:0.12em; padding:0.35rem 0.7rem; outline:none; cursor:pointer; }
+    .sort-select option { background:var(--surface); }
 
-    .showing-bar {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 1.5rem;
-    }
-    .showing-label {
-      font-size: 0.58rem; letter-spacing: 0.2em;
-      text-transform: uppercase; color: var(--muted);
-    }
-    .sort-select {
-      background: var(--drop-bg); border: 1px solid var(--border2);
-      border-radius: 4px; color: var(--muted);
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.58rem; letter-spacing: 0.12em;
-      padding: 0.35rem 0.7rem; outline: none; cursor: pointer;
-    }
-    .sort-select option { background: var(--surface); }
+    .masonry { columns:4 220px; column-gap:16px; }
+    .card { break-inside:avoid; margin-bottom:16px; cursor:pointer; animation:fadeIn 0.4s ease both; }
+    .card-img-wrap { overflow:hidden; background:var(--surface); position:relative; }
+    .card-img { width:100%; display:block; transition:transform 0.6s ease,opacity 0.4s; opacity:0; }
+    .card-img.on { opacity:1; }
+    .card:hover .card-img { transform:scale(1.04); }
+    .card-ph { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:2rem; color:var(--border2); min-height:160px; }
+    .card-body { padding:0.7rem 0 0.2rem; }
+    .card-name { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:300; line-height:1.2; margin-bottom:0.2rem; color:var(--text); }
+    .card-divider { height:1px; background:var(--border2); margin:0.4rem 0; }
+    .card-artist { font-size:0.62rem; color:var(--muted); letter-spacing:0.04em; }
 
-    /* Masonry */
-    .masonry {
-      columns: 4 220px;
-      column-gap: 16px;
-    }
-
-    .card {
-      break-inside: avoid;
-      margin-bottom: 16px;
-      cursor: pointer;
-      animation: fadeIn 0.4s ease both;
-    }
-
-    .card-img-wrap {
-      overflow: hidden;
-      background: var(--surface);
-      position: relative;
-    }
-
-    .card-img {
-      width: 100%; display: block;
-      transition: transform 0.6s ease, opacity 0.4s;
-      opacity: 0;
-    }
-    .card-img.on { opacity: 1; }
-    .card:hover .card-img { transform: scale(1.04); }
-
-    .card-ph {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2rem; color: var(--border2);
-      min-height: 160px;
-    }
-
-    .card-body { padding: 0.7rem 0 0.2rem; }
-
-    .card-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.1rem; font-weight: 300;
-      line-height: 1.2; margin-bottom: 0.2rem;
-      color: var(--text);
-    }
-
-    .card-divider { height: 1px; background: var(--border2); margin: 0.4rem 0; }
-
-    .card-artist {
-      font-size: 0.62rem; color: var(--muted);
-      letter-spacing: 0.04em;
-    }
-
-    /* ── SKELETON ── */
-    .skeleton-masonry { columns: 4 220px; column-gap: 16px; }
-    .skel-card { break-inside: avoid; margin-bottom: 16px; }
-    .skel-img { background: var(--surface); animation: pulse 1.8s ease infinite; }
-    .skel-body { padding: 0.7rem 0 0.2rem; }
-    .skel-line { height: 10px; background: var(--surface); border-radius: 1px; margin-bottom: 0.4rem; animation: pulse 1.8s ease infinite; }
-    .skel-line.s { width: 50%; }
+    /* Skeleton */
+    .skeleton-masonry { columns:4 220px; column-gap:16px; }
+    .skel-card { break-inside:avoid; margin-bottom:16px; }
+    .skel-img { background:var(--surface); animation:pulse 1.8s ease infinite; }
+    .skel-body { padding:0.7rem 0 0.2rem; }
+    .skel-line { height:10px; background:var(--surface); border-radius:1px; margin-bottom:0.4rem; animation:pulse 1.8s ease infinite; }
+    .skel-line.s { width:50%; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-    /* ── LOAD MORE ── */
-    .load-more-wrap {
-      display: flex; flex-direction: column;
-      align-items: center; gap: 0.8rem;
-      padding: 2rem 2.5rem 3rem;
-    }
-    .load-more-btn {
-      padding: 0.8rem 3rem;
-      font-family: 'Courier Prime', monospace;
-      font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase;
-      background: none; border: 1px solid var(--accent-dim);
-      color: var(--accent); cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-    }
-    .load-more-btn:hover:not(:disabled) { background: var(--accent); color: var(--bg); }
-    .load-more-btn:disabled { opacity: 0.35; cursor: default; }
-    .load-more-meta { font-size: 0.55rem; letter-spacing: 0.12em; color: var(--muted); }
-
-    /* ── EMPTY ── */
-    .empty { padding: 4rem; text-align: center; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+    /* Load more */
+    .load-more-wrap { display:flex; flex-direction:column; align-items:center; gap:0.8rem; padding:2rem 2.5rem 3rem; }
+    .load-more-btn { padding:0.8rem 3rem; font-family:'Courier Prime',monospace; font-size:0.62rem; letter-spacing:0.25em; text-transform:uppercase; background:none; border:1px solid var(--accent-dim); color:var(--accent); cursor:pointer; transition:background 0.2s,color 0.2s; }
+    .load-more-btn:hover:not(:disabled) { background:var(--accent); color:var(--bg); }
+    .load-more-btn:disabled { opacity:0.35; cursor:default; }
+    .load-more-meta { font-size:0.55rem; letter-spacing:0.12em; color:var(--muted); }
+    .empty { padding:4rem; text-align:center; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); }
 
     /* ── MODAL ── */
-    #modal-overlay {
-      position: fixed; inset: 0;
-      background: rgba(10,10,10,0.97);
-      z-index: 500; display: none;
-      align-items: center; justify-content: center;
-      padding: 1.5rem; backdrop-filter: blur(12px);
-    }
-    #modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+    #modal-overlay { position:fixed; inset:0; background:rgba(10,10,10,0.97); z-index:500; display:none; align-items:center; justify-content:center; padding:1.5rem; backdrop-filter:blur(12px); }
+    #modal-overlay.open { display:flex; animation:fadeIn 0.2s ease; }
+    .modal { display:grid; grid-template-columns:1fr 380px; max-width:1080px; width:100%; max-height:94vh; border:1px solid var(--border2); background:var(--surface); overflow:hidden; position:relative; }
+    .modal-media { overflow-y:auto; background:#000; display:flex; align-items:flex-start; justify-content:center; }
+    .modal-img { width:100%; display:block; }
+    .modal-ph-lg { font-family:'Cormorant Garamond',serif; font-size:5rem; color:var(--border2); margin:auto; }
+    .modal-panel { display:flex; flex-direction:column; border-left:1px solid var(--border); overflow-y:auto; }
+    .modal-inner { padding:2rem 1.8rem; flex:1; display:flex; flex-direction:column; }
+    .modal-tags { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.4rem; }
+    .tag { font-size:0.5rem; letter-spacing:0.2em; text-transform:uppercase; padding:0.18em 0.6em; border-radius:2px; border:1px solid; }
+    .tag-chain   { color:var(--accent); border-color:var(--accent-dim); }
+    .tag-genre   { color:var(--muted); border-color:#333; }
+    .tag-edition { color:var(--muted); border-color:#333; }
+    .tag-onchain { color:#6db87a; border-color:#2d5c35; }
+    .modal-title { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:300; line-height:1.08; margin-bottom:0.3rem; }
+    .modal-collection { font-size:0.62rem; color:var(--muted); font-style:italic; letter-spacing:0.08em; margin-bottom:0.5rem; }
+    .modal-artist { font-size:0.72rem; margin-bottom:1.5rem; }
+    .modal-artist a { color:var(--accent); text-decoration:none; }
+    .modal-artist a:hover { text-decoration:underline; }
+    .modal-hr { height:1px; background:var(--border); margin-bottom:1.4rem; }
+    .modal-desc { font-size:0.67rem; line-height:1.85; color:var(--muted); margin-bottom:1.5rem; }
+    .modal-meta { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem 1.2rem; margin-bottom:1.5rem; }
+    .mf-label { font-size:0.48rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--muted2); margin-bottom:0.2rem; }
+    .mf-value { font-size:0.66rem; color:var(--text); }
+    .modal-cta { display:block; padding:0.9rem; text-align:center; border:1px solid var(--accent-dim); color:var(--accent); text-decoration:none; font-size:0.58rem; letter-spacing:0.22em; text-transform:uppercase; transition:background 0.2s,color 0.2s; margin-top:auto; }
+    .modal-cta:hover { background:var(--accent); color:var(--bg); }
+    .modal-close { position:absolute; top:1rem; right:1rem; background:none; border:1px solid var(--border2); color:var(--muted); font-family:'Courier Prime',monospace; font-size:0.55rem; letter-spacing:0.15em; padding:0.28rem 0.55rem; cursor:pointer; z-index:10; transition:color 0.2s,border-color 0.2s; }
+    .modal-close:hover { color:var(--text); border-color:var(--muted); }
 
-    .modal {
-      display: grid; grid-template-columns: 1fr 380px;
-      max-width: 1080px; width: 100%; max-height: 94vh;
-      border: 1px solid var(--border2); background: var(--surface);
-      overflow: hidden; position: relative;
-    }
-
-    .modal-media {
-      overflow-y: auto;
-      background: #000;
-      display: flex; align-items: flex-start; justify-content: center;
-    }
-    .modal-img { width: 100%; display: block; }
-    .modal-ph-lg { font-family: 'Cormorant Garamond', serif; font-size: 5rem; color: var(--border2); margin: auto; }
-
-    .modal-panel {
-      display: flex; flex-direction: column;
-      border-left: 1px solid var(--border); overflow-y: auto;
-    }
-    .modal-inner { padding: 2rem 1.8rem; flex: 1; display: flex; flex-direction: column; }
-
-    .modal-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.4rem; }
-    .tag {
-      font-size: 0.5rem; letter-spacing: 0.2em; text-transform: uppercase;
-      padding: 0.18em 0.6em; border-radius: 2px; border: 1px solid;
-    }
-    .tag-chain   { color: var(--accent); border-color: var(--accent-dim); }
-    .tag-genre   { color: var(--muted); border-color: #333; }
-    .tag-edition { color: var(--muted); border-color: #333; }
-    .tag-onchain { color: #6db87a; border-color: #2d5c35; }
-
-    .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; line-height: 1.08; margin-bottom: 0.3rem; }
-    .modal-collection { font-size: 0.62rem; color: var(--muted); font-style: italic; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
-    .modal-artist { font-size: 0.72rem; margin-bottom: 1.5rem; }
-    .modal-artist a { color: var(--accent); text-decoration: none; }
-    .modal-artist a:hover { text-decoration: underline; }
-    .modal-hr { height: 1px; background: var(--border); margin-bottom: 1.4rem; }
-    .modal-desc { font-size: 0.67rem; line-height: 1.85; color: var(--muted); margin-bottom: 1.5rem; }
-
-    .modal-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem 1.2rem; margin-bottom: 1.5rem; }
-    .mf-label { font-size: 0.48rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted2); margin-bottom: 0.2rem; }
-    .mf-value { font-size: 0.66rem; color: var(--text); }
-
-    .modal-cta {
-      display: block; padding: 0.9rem; text-align: center;
-      border: 1px solid var(--accent-dim); color: var(--accent);
-      text-decoration: none; font-size: 0.58rem; letter-spacing: 0.22em;
-      text-transform: uppercase; transition: background 0.2s, color 0.2s;
-      margin-top: auto;
-    }
-    .modal-cta:hover { background: var(--accent); color: var(--bg); }
-
-    .modal-close {
-      position: absolute; top: 1rem; right: 1rem;
-      background: none; border: 1px solid var(--border2);
-      color: var(--muted); font-family: 'Courier Prime', monospace;
-      font-size: 0.55rem; letter-spacing: 0.15em;
-      padding: 0.28rem 0.55rem; cursor: pointer; z-index: 10;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .modal-close:hover { color: var(--text); border-color: var(--muted); }
-
-    /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 1.5rem 2.5rem;
-      display: flex; justify-content: space-between; align-items: center;
-      color: var(--muted); font-size: 0.58rem; letter-spacing: 0.1em;
-      flex-wrap: wrap; gap: 0.5rem;
-    }
+    /* Footer */
+    footer { border-top:1px solid var(--border); padding:1.5rem 2.5rem; display:flex; justify-content:space-between; align-items:center; color:var(--muted); font-size:0.58rem; letter-spacing:0.1em; flex-wrap:wrap; gap:0.5rem; }
 
     @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
@@ -352,6 +256,20 @@
   <span class="header-count" id="header-count">Loading…</span>
 </header>
 
+<!-- HERO -->
+<div id="hero">
+  <!-- Slides injected by JS -->
+  <div class="hero-nav" id="hero-nav" style="display:none">
+    <button class="hero-nav-btn" onclick="heroStep(-1)">← prev</button>
+    <div class="hero-dots" id="hero-dots"></div>
+    <span class="hero-counter" id="hero-counter"></span>
+    <button class="hero-nav-btn" onclick="heroStep(1)">next →</button>
+  </div>
+  <div class="hero-scroll">
+    <span class="hero-scroll-arrow">↓</span>
+  </div>
+</div>
+
 <!-- FILTER BAR -->
 <div class="filter-bar">
   <div class="search-row">
@@ -360,9 +278,7 @@
       placeholder="Search for artist, genre, collection etc."
       oninput="onSearch()" />
   </div>
-  <div class="dropdowns-row" id="dropdowns-row">
-    <!-- Dropdowns injected by JS -->
-  </div>
+  <div class="dropdowns-row" id="dropdowns-row"></div>
 </div>
 
 <!-- GRID -->
@@ -377,8 +293,6 @@
       <option value="artist-asc">Artist A–Z</option>
     </select>
   </div>
-
-  <!-- Skeleton -->
   <div class="skeleton-masonry" id="skeleton">
     <div class="skel-card"><div class="skel-img" style="height:280px"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
     <div class="skel-card"><div class="skel-img" style="height:380px"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
@@ -389,7 +303,6 @@
     <div class="skel-card"><div class="skel-img" style="height:360px"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
     <div class="skel-card"><div class="skel-img" style="height:220px"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
   </div>
-
   <div class="masonry" id="grid" style="display:none"></div>
 </div>
 
@@ -401,17 +314,15 @@
 <!-- MODAL -->
 <div id="modal-overlay" onclick="handleOverlay(event)">
   <div class="modal">
-    <div class="modal-media" id="modal-media">
-      <span class="modal-ph-lg">◈</span>
-    </div>
+    <div class="modal-media" id="modal-media"><span class="modal-ph-lg">◈</span></div>
     <div class="modal-panel">
       <div class="modal-inner">
-        <div class="modal-tags"       id="m-tags"></div>
-        <h2 class="modal-title"       id="m-title">—</h2>
-        <p  class="modal-collection"  id="m-collection"></p>
-        <p  class="modal-artist"      id="m-artist"></p>
+        <div class="modal-tags"      id="m-tags"></div>
+        <h2 class="modal-title"     id="m-title">—</h2>
+        <p  class="modal-collection"id="m-collection"></p>
+        <p  class="modal-artist"    id="m-artist"></p>
         <div class="modal-hr"></div>
-        <p  class="modal-desc"        id="m-desc"></p>
+        <p  class="modal-desc"      id="m-desc"></p>
         <div class="modal-meta">
           <div><p class="mf-label">Blockchain</p><p class="mf-value" id="m-chain">—</p></div>
           <div><p class="mf-label">Edition type</p><p class="mf-value" id="m-edition">—</p></div>
@@ -436,32 +347,28 @@
 </footer>
 
 <script>
-// ── CONFIG ────────────────────────────────────────────────────
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS154SLHdR0VAHbIF85AbankTkj0BaChSYHGoDmNxep7GlNk1dvltosYXXKcagJlxm82SPATyPl4_4t/pub?gid=1113744394&single=true&output=csv';
-const CACHE_KEY    = 'ol1y_v3';
-const CACHE_TTL    = 60 * 60 * 1000; // 1 hour
-const PAGE_SIZE    = 48;
+const CACHE_KEY  = 'ol1y_v4';
+const CACHE_TTL  = 60 * 60 * 1000;
+const PAGE_SIZE  = 48;
+const TAGLINE    = 'Masterpieces shaping the digital renaissance';
+const AUTO_CYCLE = 6000; // ms between hero slides
 
-// ── DROPDOWN DEFINITIONS ──────────────────────────────────────
 const DROPDOWNS = [
-  { id:'artist',   label:'Artist',        field:'Artist' },
-  { id:'coll',     label:'Collection',    field:'Collection' },
-  { id:'genre',    label:'Genre',         field:'Genre' },
-  { id:'chain',    label:'Blockchain',    field:'Blockchain' },
-  { id:'colour',   label:'Primary Colour',field:'Primary Colour' },
-  { id:'edition',  label:'Edition Type',  field:'Edition Type' },
+  { id:'artist',  label:'Artist',         field:'Artist' },
+  { id:'coll',    label:'Collection',     field:'Collection' },
+  { id:'genre',   label:'Genre',          field:'Genre' },
+  { id:'chain',   label:'Blockchain',     field:'Blockchain' },
+  { id:'colour',  label:'Primary Colour', field:'Primary Colour' },
+  { id:'edition', label:'Edition Type',   field:'Edition Type' },
 ];
 
-// ── STATE ─────────────────────────────────────────────────────
-let allNFTs    = [];
-let filtered   = [];
-let displayed  = 0;
-let activeSort = 'acquired-desc';
-let searchQ    = '';
-const selections = {};  // { artist: null, coll: null, ... }
+let allNFTs = [], filtered = [], displayed = 0;
+let activeSort = 'acquired-desc', searchQ = '';
+const selections = {};
 DROPDOWNS.forEach(d => selections[d.id] = null);
 
-// ── CSV PARSE ─────────────────────────────────────────────────
+// ── CSV ───────────────────────────────────────────────────────
 function parseCSV(text) {
   const lines = [];
   let cur = '', inQ = false;
@@ -472,7 +379,6 @@ function parseCSV(text) {
     else cur += c;
   }
   if (cur) lines.push(cur);
-
   function splitRow(row) {
     const cols = []; let cell = '', q = false;
     for (let i = 0; i < row.length; i++) {
@@ -481,20 +387,14 @@ function parseCSV(text) {
       else if (c === ',' && !q) { cols.push(cell.trim()); cell = ''; }
       else cell += c;
     }
-    cols.push(cell.trim());
-    return cols;
+    cols.push(cell.trim()); return cols;
   }
   const headers = splitRow(lines[0]);
   return lines.slice(1)
-    .map(l => {
-      const v = splitRow(l), o = {};
-      headers.forEach((h,i) => o[h.trim()] = (v[i]||'').trim());
-      return o;
-    })
+    .map(l => { const v = splitRow(l), o = {}; headers.forEach((h,i) => o[h.trim()] = (v[i]||'').trim()); return o; })
     .filter(r => r['Name'] && r['Name'] !== 'undefined' && r['Name'] !== '');
 }
 
-// ── LOAD + CACHE ──────────────────────────────────────────────
 async function loadCollection() {
   try {
     const c = JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
@@ -507,36 +407,103 @@ async function loadCollection() {
   return data;
 }
 
+// ── HERO ──────────────────────────────────────────────────────
+let heroNFTs = [], heroIdx = 0, heroTimer = null;
+
+function buildHero(nfts) {
+  heroNFTs = nfts.filter(n => n['Featured'] === 'Yes' && n.Image);
+
+  // Fallback: use first 5 with images if none flagged
+  if (!heroNFTs.length) heroNFTs = nfts.filter(n => n.Image).slice(0, 5);
+  if (!heroNFTs.length) return;
+
+  const hero = document.getElementById('hero');
+
+  // Remove any existing slides
+  hero.querySelectorAll('.hero-slide').forEach(s => s.remove());
+
+  // Build slides
+  heroNFTs.forEach((nft, i) => {
+    const slide = document.createElement('div');
+    slide.className = 'hero-slide' + (i === 0 ? ' active' : '');
+    slide.onclick = () => openModalByNFT(nft);
+
+    slide.innerHTML = `
+      <img class="hero-slide-bg" src="${esc(nft.Image)}" alt="${esc(nft.Name)}" />
+      <div class="hero-content">
+        <p class="hero-tagline">${esc(TAGLINE)}</p>
+        <h2 class="hero-title">${esc(nft.Name)}</h2>
+        <p class="hero-artist">${esc(nft.Artist || '')}</p>
+        ${nft.Marketplace ? `<a class="hero-cta" href="${esc(nft.Marketplace)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">View on-chain ↗</a>` : ''}
+      </div>`;
+
+    // Insert before hero-nav
+    hero.insertBefore(slide, document.getElementById('hero-nav'));
+  });
+
+  // Dots
+  const dotsEl = document.getElementById('hero-dots');
+  dotsEl.innerHTML = heroNFTs.map((_,i) =>
+    `<span class="hero-dot${i===0?' active':''}" onclick="heroGoTo(${i})"></span>`
+  ).join('');
+
+  updateHeroCounter();
+
+  if (heroNFTs.length > 1) {
+    document.getElementById('hero-nav').style.display = 'flex';
+    startHeroTimer();
+  }
+}
+
+function heroGoTo(idx) {
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots   = document.querySelectorAll('.hero-dot');
+  slides[heroIdx].classList.remove('active');
+  dots[heroIdx].classList.remove('active');
+  heroIdx = (idx + heroNFTs.length) % heroNFTs.length;
+  slides[heroIdx].classList.add('active');
+  dots[heroIdx].classList.add('active');
+  updateHeroCounter();
+  resetHeroTimer();
+}
+
+function heroStep(dir) { heroGoTo(heroIdx + dir); }
+
+function updateHeroCounter() {
+  document.getElementById('hero-counter').textContent =
+    String(heroIdx+1).padStart(2,'0') + ' / ' + String(heroNFTs.length).padStart(2,'0');
+}
+
+function startHeroTimer() {
+  heroTimer = setInterval(() => heroStep(1), AUTO_CYCLE);
+}
+
+function resetHeroTimer() {
+  clearInterval(heroTimer);
+  startHeroTimer();
+}
+
 // ── DROPDOWNS ─────────────────────────────────────────────────
 function buildDropdowns(nfts) {
   const row = document.getElementById('dropdowns-row');
   row.innerHTML = '';
-
   DROPDOWNS.forEach(({ id, label, field }) => {
-    // Unique sorted values
-    const vals = [...new Set(nfts.map(n => n[field]).filter(v => v && v !== 'TBC'))]
-      .sort((a,b) => a.localeCompare(b));
-
+    const vals = [...new Set(nfts.map(n => n[field]).filter(v => v && v !== 'TBC'))].sort((a,b) => a.localeCompare(b));
     const wrap = document.createElement('div');
-    wrap.className = 'dd-wrap';
-    wrap.id = 'dd-' + id;
-
+    wrap.className = 'dd-wrap'; wrap.id = 'dd-' + id;
     wrap.innerHTML = `
       <button class="dd-btn" onclick="toggleDD('${id}')">
         <span class="dd-label">${label}</span>
         <span class="dd-arrow">▾</span>
       </button>
       <div class="dd-menu" id="menu-${id}">
-        <div class="dd-item selected" data-val="" onclick="selectDD('${id}','',this)">All</div>
-        ${vals.map(v => `<div class="dd-item" data-val="${esc(v)}" onclick="selectDD('${id}','${esc(v)}',this)">${esc(v)}</div>`).join('')}
+        <div class="dd-item selected" onclick="selectDD('${id}','',this)">All</div>
+        ${vals.map(v => `<div class="dd-item" onclick="selectDD('${id}','${esc(v)}',this)">${esc(v)}</div>`).join('')}
       </div>`;
     row.appendChild(wrap);
   });
-
-  // Clear button
   const clear = document.createElement('button');
-  clear.className = 'clear-btn';
-  clear.textContent = 'Clear filters';
+  clear.className = 'clear-btn'; clear.textContent = 'Clear filters';
   clear.onclick = clearFilters;
   row.appendChild(clear);
 }
@@ -544,34 +511,23 @@ function buildDropdowns(nfts) {
 function toggleDD(id) {
   const wrap = document.getElementById('dd-' + id);
   const isOpen = wrap.classList.contains('open');
-  // Close all
   document.querySelectorAll('.dd-wrap.open').forEach(w => w.classList.remove('open'));
   if (!isOpen) wrap.classList.add('open');
 }
 
-// Close dropdowns on outside click
 document.addEventListener('click', e => {
-  if (!e.target.closest('.dd-wrap')) {
+  if (!e.target.closest('.dd-wrap'))
     document.querySelectorAll('.dd-wrap.open').forEach(w => w.classList.remove('open'));
-  }
 });
 
 function selectDD(id, val, item) {
   selections[id] = val || null;
-
-  // Update menu items
-  const menu = document.getElementById('menu-' + id);
-  menu.querySelectorAll('.dd-item').forEach(el => el.classList.remove('selected'));
+  document.getElementById('menu-' + id).querySelectorAll('.dd-item').forEach(el => el.classList.remove('selected'));
   item.classList.add('selected');
-
-  // Update button label + active state
   const btn = document.querySelector(`#dd-${id} .dd-btn`);
   const lbl = document.querySelector(`#dd-${id} .dd-label`);
-  const def = DROPDOWNS.find(d => d.id === id).label;
-  lbl.textContent = val ? val : def;
+  lbl.textContent = val ? val : DROPDOWNS.find(d => d.id === id).label;
   btn.classList.toggle('active', !!val);
-
-  // Close dropdown
   document.getElementById('dd-' + id).classList.remove('open');
   refresh();
 }
@@ -580,10 +536,7 @@ function clearFilters() {
   DROPDOWNS.forEach(d => {
     selections[d.id] = null;
     const menu = document.getElementById('menu-' + d.id);
-    if (menu) {
-      menu.querySelectorAll('.dd-item').forEach(el => el.classList.remove('selected'));
-      menu.querySelector('.dd-item').classList.add('selected');
-    }
+    if (menu) { menu.querySelectorAll('.dd-item').forEach(el => el.classList.remove('selected')); menu.querySelector('.dd-item').classList.add('selected'); }
     const btn = document.querySelector(`#dd-${d.id} .dd-btn`);
     const lbl = document.querySelector(`#dd-${d.id} .dd-label`);
     if (btn) btn.classList.remove('active');
@@ -599,8 +552,7 @@ function applyFilters() {
   const q = searchQ.toLowerCase();
   filtered = allNFTs.filter(n => {
     for (const { id, field } of DROPDOWNS) {
-      const sel = selections[id];
-      if (sel && n[field] !== sel) return false;
+      if (selections[id] && n[field] !== selections[id]) return false;
     }
     if (q) {
       const hay = [n.Name,n.Artist,n.Collection,n.Genre,n['Theme (key words)'],n['Primary Colour']].join(' ').toLowerCase();
@@ -608,7 +560,6 @@ function applyFilters() {
     }
     return true;
   });
-
   filtered.sort((a,b) => {
     switch(activeSort) {
       case 'acquired-desc': return dateCmp(b.Acquired, a.Acquired);
@@ -623,8 +574,7 @@ function applyFilters() {
 
 function dateCmp(a, b) {
   const da = a ? new Date(a) : null, db = b ? new Date(b) : null;
-  if (!da && !db) return 0;
-  if (!da) return 1; if (!db) return -1;
+  if (!da && !db) return 0; if (!da) return 1; if (!db) return -1;
   return db - da;
 }
 
@@ -633,9 +583,7 @@ function onSearch() {
   clearTimeout(searchTimer);
   searchTimer = setTimeout(() => { searchQ = document.getElementById('search').value; refresh(); }, 200);
 }
-
 function setSort(val) { activeSort = val; refresh(); }
-
 function refresh() { applyFilters(); renderGrid(true); }
 
 // ── GRID ──────────────────────────────────────────────────────
@@ -644,7 +592,7 @@ function renderGrid(reset = true) {
   if (reset) { grid.innerHTML = ''; displayed = 0; }
 
   if (filtered.length === 0 && reset) {
-    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">No works match your filters.</div>';
+    grid.innerHTML = '<div class="empty" style="column-span:all">No works match your filters.</div>';
     document.getElementById('load-more-wrap').style.display = 'none';
     document.getElementById('showing-label').textContent = '0 works';
     return;
@@ -657,14 +605,10 @@ function renderGrid(reset = true) {
     const card = document.createElement('div');
     card.className = 'card';
     card.style.animationDelay = Math.min(i,20)*0.025 + 's';
-    card.onclick = () => openModal(filtered.indexOf(nft));
-
+    card.onclick = () => openModalByNFT(nft);
     card.innerHTML = `
       <div class="card-img-wrap">
-        ${nft.Image
-          ? `<img class="card-img" src="${esc(nft.Image)}" alt="${esc(nft.Name)}" loading="lazy"
-               onload="this.classList.add('on')" onerror="this.style.display='none'">`
-          : ''}
+        ${nft.Image ? `<img class="card-img" src="${esc(nft.Image)}" alt="${esc(nft.Name)}" loading="lazy" onload="this.classList.add('on')" onerror="this.style.display='none'">` : ''}
         <div class="card-ph" style="min-height:200px">◈</div>
       </div>
       <div class="card-body">
@@ -675,13 +619,11 @@ function renderGrid(reset = true) {
     grid.appendChild(card);
   });
 
-  // Counts
   const total = filtered.length, all = allNFTs.length;
   document.getElementById('showing-label').textContent =
     total === all ? `${all.toLocaleString()} works` : `${total.toLocaleString()} of ${all.toLocaleString()} works`;
   document.getElementById('header-count').textContent = `${all.toLocaleString()} works`;
 
-  // Load more
   const more = displayed < filtered.length;
   const area = document.getElementById('load-more-wrap');
   const btn  = document.getElementById('load-more-btn');
@@ -699,44 +641,37 @@ function loadMore() { renderGrid(false); }
 // ── MODAL ─────────────────────────────────────────────────────
 function makeTags(nft) {
   const t = [];
-  if (nft.Blockchain)       t.push(`<span class="tag tag-chain">${esc(nft.Blockchain)}</span>`);
+  if (nft.Blockchain) t.push(`<span class="tag tag-chain">${esc(nft.Blockchain)}</span>`);
   if (nft.Genre && nft.Genre !== 'TBC') t.push(`<span class="tag tag-genre">${esc(nft.Genre)}</span>`);
   if (nft['Edition Type']) t.push(`<span class="tag tag-edition">${esc(nft['Edition Type'])}</span>`);
   if (nft['Fully On-Chain?'] === 'Yes') t.push(`<span class="tag tag-onchain">Fully on-chain</span>`);
   return t.join('');
 }
 
-function openModal(idx) {
-  if (idx < 0 || idx >= filtered.length) return;
-  const nft = filtered[idx];
-
+function openModalByNFT(nft) {
+  if (!nft) return;
   const media = document.getElementById('modal-media');
   media.innerHTML = nft.Image
     ? `<img class="modal-img" src="${esc(nft.Image)}" alt="${esc(nft.Name)}">`
     : `<span class="modal-ph-lg">◈</span>`;
-
-  document.getElementById('m-tags').innerHTML      = makeTags(nft);
-  document.getElementById('m-title').textContent   = nft.Name || '—';
+  document.getElementById('m-tags').innerHTML = makeTags(nft);
+  document.getElementById('m-title').textContent      = nft.Name || '—';
   document.getElementById('m-collection').textContent = nft.Collection ? 'from ' + nft.Collection : '';
-
   const ma = document.getElementById('m-artist');
   if (nft['Artist Profile'])
     ma.innerHTML = `<a href="${esc(nft['Artist Profile'])}" target="_blank" rel="noopener">${esc(nft.Artist||'Unknown artist')}</a>`;
   else
     ma.textContent = nft.Artist || 'Unknown artist';
-
-  document.getElementById('m-desc').textContent    = nft.Description || '';
-  document.getElementById('m-chain').textContent   = nft.Blockchain || '—';
-  document.getElementById('m-edition').textContent = nft['Edition Type'] || '—';
-  document.getElementById('m-genre').textContent   = nft.Genre || '—';
-  document.getElementById('m-size').textContent    = nft['Collection Size']
-    ? Number(nft['Collection Size']).toLocaleString() : '—';
-  document.getElementById('m-colour').textContent  = nft['Primary Colour'] || '—';
-  document.getElementById('m-onchain').textContent = nft['Fully On-Chain?'] || '—';
+  document.getElementById('m-desc').textContent     = nft.Description || '';
+  document.getElementById('m-chain').textContent    = nft.Blockchain || '—';
+  document.getElementById('m-edition').textContent  = nft['Edition Type'] || '—';
+  document.getElementById('m-genre').textContent    = nft.Genre || '—';
+  document.getElementById('m-size').textContent     = nft['Collection Size'] ? Number(nft['Collection Size']).toLocaleString() : '—';
+  document.getElementById('m-colour').textContent   = nft['Primary Colour'] || '—';
+  document.getElementById('m-onchain').textContent  = nft['Fully On-Chain?'] || '—';
   document.getElementById('m-created').textContent  = nft.Created || '—';
   document.getElementById('m-acquired').textContent = nft.Acquired || '—';
-  document.getElementById('m-link').href            = nft.Marketplace || '#';
-
+  document.getElementById('m-link').href             = nft.Marketplace || '#';
   document.getElementById('modal-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -745,12 +680,9 @@ function closeModal() {
   document.getElementById('modal-overlay').classList.remove('open');
   document.body.style.overflow = '';
 }
-function handleOverlay(e) {
-  if (e.target === document.getElementById('modal-overlay')) closeModal();
-}
+function handleOverlay(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-// ── UTIL ──────────────────────────────────────────────────────
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -759,14 +691,12 @@ function esc(s) {
 async function init() {
   try {
     allNFTs = await loadCollection();
+    buildHero(allNFTs);
     buildDropdowns(allNFTs);
     applyFilters();
-
     document.getElementById('skeleton').style.display = 'none';
-    document.getElementById('grid').style.display     = '';
-
+    document.getElementById('grid').style.display = '';
     renderGrid(true);
-
     try {
       const c = JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
       if (c?.ts) {
@@ -774,12 +704,11 @@ async function init() {
         document.getElementById('footer-note').textContent = 'Data cached ' + d;
       }
     } catch {}
-
   } catch(e) {
     document.getElementById('skeleton').style.display = 'none';
-    document.getElementById('grid').style.display     = '';
+    document.getElementById('grid').style.display = '';
     document.getElementById('grid').innerHTML =
-      `<div class="empty">Failed to load collection — ${esc(e.message)}<br><br>Make sure the Google Sheet is published to the web as CSV.</div>`;
+      `<div class="empty">Failed to load — ${esc(e.message)}<br><br>Make sure the sheet is published as CSV.</div>`;
     document.getElementById('header-count').textContent = 'Error';
   }
 }
