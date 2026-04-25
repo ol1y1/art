@@ -5,145 +5,344 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ol1y.art — Collection</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg:#080807; --bg2:#0e0e0c; --surface:#131311; --border:#1e1e1a; --border2:#2a2a25;
-      --text:#e2ddd4; --muted:#5c5950; --muted2:#3a3832;
-      --accent:#bfa96e; --accent-dim:#6b5e38; --accent-pale:#2a2316;
+      --bg:       #0a0a0a;
+      --surface:  #141414;
+      --border:   #252525;
+      --border2:  #333;
+      --text:     #e8e4d8;
+      --muted:    #666;
+      --muted2:   #444;
+      --accent:   #bfa96e;
+      --accent-dim:#6b5e38;
+      --drop-bg:  #1a1a1a;
     }
+
     html { scroll-behavior: smooth; }
-    body { background:var(--bg); color:var(--text); font-family:'Courier Prime',monospace; min-height:100vh; overflow-x:hidden; }
-    body::after {
-      content:''; position:fixed; inset:0;
-      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events:none; z-index:9000; opacity:0.5;
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier Prime', monospace;
+      min-height: 100vh;
     }
+
+    /* ── HEADER ── */
     header {
-      display:flex; justify-content:space-between; align-items:center;
-      padding:1.5rem 2.8rem; border-bottom:1px solid var(--border);
-      position:sticky; top:0; background:rgba(8,8,7,0.96);
-      backdrop-filter:blur(20px); z-index:300; animation:fadeDown 0.6s ease both;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0;
+      background: rgba(10,10,10,0.97);
+      backdrop-filter: blur(16px);
+      z-index: 200;
     }
-    .logo { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:300; letter-spacing:0.12em; color:var(--text); text-decoration:none; }
-    .logo em { color:var(--accent); font-style:italic; }
-    .header-count { font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); }
-    .toolbar {
-      display:flex; align-items:stretch; border-bottom:1px solid var(--border);
-      position:sticky; top:61px; background:rgba(8,8,7,0.97);
-      backdrop-filter:blur(20px); z-index:200; overflow-x:auto;
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem; font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 0.8rem;
     }
-    .filter-group { display:flex; border-right:1px solid var(--border); flex-shrink:0; }
-    .filter-group:last-child { border-right:none; }
-    .filter-btn {
-      padding:0.7rem 1.1rem; font-family:'Courier Prime',monospace;
-      font-size:0.56rem; letter-spacing:0.2em; text-transform:uppercase;
-      color:var(--muted); background:none; border:none;
-      border-bottom:2px solid transparent; cursor:pointer;
-      transition:color 0.2s,border-color 0.2s,background 0.2s; white-space:nowrap;
+    .logo em { color: var(--accent); font-style: italic; }
+
+    .header-count {
+      font-size: 0.58rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--muted);
     }
-    .filter-btn:hover { color:var(--text); background:var(--bg2); }
-    .filter-btn.active { color:var(--accent); border-bottom-color:var(--accent); }
-    .search-wrap { display:flex; align-items:center; padding:0 1rem; flex:1; min-width:160px; border-right:1px solid var(--border); }
-    .search-icon { color:var(--muted); font-size:0.8rem; margin-right:0.6rem; flex-shrink:0; }
-    .search-input { background:none; border:none; outline:none; font-family:'Courier Prime',monospace; font-size:0.65rem; letter-spacing:0.08em; color:var(--text); width:100%; }
-    .search-input::placeholder { color:var(--muted2); }
-    .sort-select { padding:0.7rem 1.1rem; font-family:'Courier Prime',monospace; font-size:0.56rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); background:none; border:none; cursor:pointer; outline:none; }
-    .sort-select option { background:var(--bg); color:var(--text); }
-    #hero { position:relative; height:88vh; display:flex; align-items:flex-end; padding:3rem; overflow:hidden; cursor:pointer; animation:fadeIn 0.6s ease both; }
-    #hero-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform 10s ease,opacity 1.2s ease; opacity:0; }
-    #hero-bg.on { opacity:1; }
-    #hero:hover #hero-bg { transform:scale(1.02); }
-    #hero::after { content:''; position:absolute; inset:0; background:linear-gradient(to top,rgba(8,8,7,1) 0%,rgba(8,8,7,0.5) 40%,rgba(8,8,7,0.05) 100%),linear-gradient(to right,rgba(8,8,7,0.3) 0%,transparent 60%); }
-    .hero-ph { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:6rem; color:var(--border2); letter-spacing:0.3em; font-weight:300; transition:opacity 0.8s; }
-    .hero-info { position:relative; z-index:2; max-width:750px; animation:fadeUp 0.9s ease 0.3s both; }
-    .hero-tags { display:flex; gap:0.5rem; margin-bottom:1rem; flex-wrap:wrap; }
-    .tag { font-size:0.52rem; letter-spacing:0.22em; text-transform:uppercase; padding:0.18em 0.6em; border-radius:1px; border:1px solid; }
-    .tag-chain   { color:var(--accent); border-color:var(--accent-dim); }
-    .tag-genre   { color:var(--muted); border-color:var(--muted2); }
-    .tag-edition { color:var(--muted); border-color:var(--muted2); }
-    .tag-onchain { color:#6db87a; border-color:#2d5c35; }
-    .hero-title { font-family:'Cormorant Garamond',serif; font-size:clamp(2.2rem,6vw,5rem); font-weight:300; line-height:1.04; margin-bottom:0.5rem; }
-    .hero-collection { font-size:0.65rem; color:var(--muted); letter-spacing:0.1em; font-style:italic; margin-bottom:0.7rem; }
-    .hero-artist { font-size:0.72rem; color:var(--text); letter-spacing:0.06em; margin-bottom:1rem; }
-    .hero-artist-link { color:var(--accent); text-decoration:none; border-bottom:1px solid transparent; transition:border-color 0.2s; }
-    .hero-artist-link:hover { border-bottom-color:var(--accent-dim); }
-    .hero-desc { font-size:0.68rem; line-height:1.75; color:var(--muted); max-width:560px; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
-    .hero-actions { display:flex; align-items:center; gap:1.2rem; margin-top:1.2rem; }
-    .hero-cta { font-size:0.58rem; letter-spacing:0.22em; text-transform:uppercase; padding:0.6rem 1.4rem; border:1px solid var(--accent-dim); color:var(--accent); text-decoration:none; transition:background 0.2s,color 0.2s; }
-    .hero-cta:hover { background:var(--accent); color:var(--bg); }
-    .hero-acquired { font-size:0.58rem; letter-spacing:0.12em; color:var(--muted); font-style:italic; }
-    .hero-nav { position:absolute; bottom:3rem; right:3rem; z-index:2; display:flex; align-items:center; gap:0.8rem; }
-    .hero-nav-btn { background:none; border:1px solid var(--border2); color:var(--muted); font-family:'Courier Prime',monospace; font-size:0.6rem; padding:0.4rem 0.8rem; cursor:pointer; transition:all 0.2s; letter-spacing:0.1em; }
-    .hero-nav-btn:hover { color:var(--text); border-color:var(--muted); }
-    .hero-counter { font-size:0.58rem; letter-spacing:0.2em; color:var(--muted); }
-    .divider { display:flex; align-items:center; gap:1.5rem; padding:1.8rem 2.8rem 1.2rem; }
-    .divider-label { font-size:0.56rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
-    .divider-line { flex:1; height:1px; background:var(--border); }
-    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1px; background:var(--border); margin:0 2.8rem; border:1px solid var(--border); }
-    .card { background:var(--bg); cursor:pointer; overflow:hidden; transition:background 0.15s; animation:fadeIn 0.4s ease both; }
-    .card:hover { background:var(--surface); }
-    .card-img-wrap { aspect-ratio:1; overflow:hidden; background:var(--bg2); position:relative; }
-    .card-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.6s ease,opacity 0.4s; opacity:0; }
-    .card-img.on { opacity:1; }
-    .card:hover .card-img { transform:scale(1.08); }
-    .card-ph { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:2.5rem; color:var(--border2); font-weight:300; }
-    .card-onchain-pip { position:absolute; top:0; right:0; font-size:0.45rem; letter-spacing:0.15em; text-transform:uppercase; background:#1a3d20; color:#6db87a; padding:0.2em 0.5em; border-bottom-left-radius:2px; }
-    .card-body { padding:0.75rem 0.85rem 0.85rem; border-top:1px solid var(--border); }
-    .card-name { font-family:'Cormorant Garamond',serif; font-size:0.95rem; font-weight:300; line-height:1.2; margin-bottom:0.2rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .card-artist { font-size:0.58rem; color:var(--muted); letter-spacing:0.05em; margin-bottom:0.55rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .card-footer { display:flex; justify-content:space-between; align-items:center; gap:0.4rem; flex-wrap:wrap; }
-    .card-chain { font-size:0.5rem; letter-spacing:0.18em; text-transform:uppercase; padding:0.16em 0.5em; border:1px solid var(--accent-dim); color:var(--accent); border-radius:1px; }
-    .card-genre { font-size:0.5rem; letter-spacing:0.12em; color:var(--muted); font-style:italic; }
-    .card-link { font-size:0.5rem; letter-spacing:0.15em; color:var(--muted); text-decoration:none; transition:color 0.2s; flex-shrink:0; }
-    .card-link:hover { color:var(--accent); }
-    .skeleton-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1px; background:var(--border); margin:0 2.8rem; border:1px solid var(--border); }
-    .skel-card { background:var(--bg); }
-    .skel-img { aspect-ratio:1; background:var(--bg2); animation:pulse 1.8s ease infinite; }
-    .skel-body { padding:0.75rem 0.85rem; border-top:1px solid var(--border); }
-    .skel-line { height:10px; background:var(--surface); border-radius:1px; margin-bottom:0.45rem; animation:pulse 1.8s ease infinite; }
-    .skel-line.s { width:55%; } .skel-line.xs { width:35%; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
-    .load-more-area { display:flex; flex-direction:column; align-items:center; gap:0.8rem; padding:2.8rem; }
-    .load-more-btn { padding:0.8rem 2.8rem; font-family:'Courier Prime',monospace; font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase; background:none; border:1px solid var(--accent-dim); color:var(--accent); cursor:pointer; transition:background 0.2s,color 0.2s; }
-    .load-more-btn:hover:not(:disabled) { background:var(--accent); color:var(--bg); }
-    .load-more-btn:disabled { opacity:0.35; cursor:default; }
-    .load-more-meta { font-size:0.55rem; letter-spacing:0.12em; color:var(--muted); }
-    #modal-overlay { position:fixed; inset:0; background:rgba(8,8,7,0.97); z-index:500; display:none; align-items:center; justify-content:center; padding:1.5rem; backdrop-filter:blur(10px); }
-    #modal-overlay.open { display:flex; animation:fadeIn 0.2s ease; }
-    .modal { display:grid; grid-template-columns:1fr 380px; max-width:1060px; width:100%; max-height:94vh; border:1px solid var(--border2); background:var(--surface); overflow:hidden; position:relative; }
-    .modal-media { overflow:hidden; background:var(--bg2); display:flex; align-items:center; justify-content:center; }
-    .modal-img { width:100%; height:100%; object-fit:contain; max-height:90vh; display:block; }
-    .modal-ph-lg { font-family:'Cormorant Garamond',serif; font-size:6rem; color:var(--border2); font-weight:300; }
-    .modal-panel { display:flex; flex-direction:column; border-left:1px solid var(--border); overflow-y:auto; }
-    .modal-panel-inner { padding:2rem 1.8rem; flex:1; display:flex; flex-direction:column; }
-    .modal-tags { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.4rem; }
-    .modal-title { font-family:'Cormorant Garamond',serif; font-size:1.9rem; font-weight:300; line-height:1.08; margin-bottom:0.3rem; }
-    .modal-collection { font-size:0.65rem; color:var(--muted); font-style:italic; letter-spacing:0.08em; margin-bottom:0.5rem; }
-    .modal-artist { font-size:0.72rem; margin-bottom:1.6rem; letter-spacing:0.04em; }
-    .modal-artist a { color:var(--accent); text-decoration:none; }
-    .modal-artist a:hover { text-decoration:underline; }
-    .modal-hr { height:1px; background:var(--border); margin-bottom:1.4rem; }
-    .modal-desc { font-size:0.68rem; line-height:1.8; color:var(--muted); margin-bottom:1.4rem; }
-    .modal-meta { display:grid; grid-template-columns:1fr 1fr; gap:0.8rem 1rem; margin-bottom:1.4rem; }
-    .modal-field-label { font-size:0.5rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--muted2); margin-bottom:0.2rem; }
-    .modal-field-value { font-size:0.68rem; color:var(--text); }
-    .modal-cta { display:block; padding:0.9rem 1.4rem; text-align:center; text-decoration:none; border:1px solid var(--accent-dim); color:var(--accent); font-size:0.58rem; letter-spacing:0.22em; text-transform:uppercase; transition:background 0.2s,color 0.2s; margin-top:auto; }
-    .modal-cta:hover { background:var(--accent); color:var(--bg); }
-    .modal-close { position:absolute; top:1rem; right:1rem; background:none; border:1px solid var(--border2); color:var(--muted); font-family:'Courier Prime',monospace; font-size:0.56rem; letter-spacing:0.15em; padding:0.3rem 0.6rem; cursor:pointer; z-index:10; transition:color 0.2s,border-color 0.2s; }
-    .modal-close:hover { color:var(--text); border-color:var(--muted); }
-    footer { border-top:1px solid var(--border); margin-top:4rem; padding:2rem 2.8rem; display:flex; justify-content:space-between; align-items:center; color:var(--muted); font-size:0.58rem; letter-spacing:0.1em; flex-wrap:wrap; gap:0.5rem; }
-    @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
-    @keyframes fadeUp   { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes fadeDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      padding: 1.2rem 2.5rem 1rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      position: sticky; top: 57px;
+      z-index: 100;
+    }
+
+    .search-row {
+      display: flex; align-items: center; gap: 0.6rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .search-icon { color: var(--muted); font-size: 1rem; flex-shrink: 0; }
+
+    .search-input {
+      background: none; border: none; outline: none;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.72rem; letter-spacing: 0.06em;
+      color: var(--text); width: 100%; max-width: 420px;
+    }
+    .search-input::placeholder { color: var(--muted2); }
+
+    .dropdowns-row {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+    }
+
+    /* Custom dropdown */
+    .dd-wrap {
+      position: relative;
+    }
+
+    .dd-btn {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.45rem 0.9rem;
+      background: var(--drop-bg);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      color: var(--muted);
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+      white-space: nowrap;
+      min-width: 130px; justify-content: space-between;
+    }
+    .dd-btn:hover { border-color: var(--muted); color: var(--text); }
+    .dd-btn.active { border-color: var(--accent-dim); color: var(--accent); }
+
+    .dd-arrow {
+      font-size: 0.5rem; opacity: 0.6;
+      transition: transform 0.2s;
+    }
+    .dd-wrap.open .dd-arrow { transform: rotate(180deg); }
+
+    .dd-menu {
+      position: absolute; top: calc(100% + 4px); left: 0;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      min-width: 180px; max-width: 260px;
+      max-height: 320px; overflow-y: auto;
+      z-index: 300;
+      display: none;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+    .dd-wrap.open .dd-menu { display: block; animation: fadeIn 0.15s ease; }
+
+    .dd-item {
+      padding: 0.55rem 1rem;
+      font-size: 0.62rem; letter-spacing: 0.1em;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .dd-item:last-child { border-bottom: none; }
+    .dd-item:hover { background: var(--drop-bg); color: var(--text); }
+    .dd-item.selected { color: var(--accent); background: var(--drop-bg); }
+
+    .clear-btn {
+      padding: 0.45rem 0.9rem;
+      background: none; border: 1px solid var(--border);
+      border-radius: 4px; color: var(--muted);
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase;
+      cursor: pointer; transition: color 0.2s, border-color 0.2s;
+    }
+    .clear-btn:hover { color: var(--text); border-color: var(--muted); }
+
+    /* ── GRID ── */
+    .grid-wrap { padding: 2rem 2.5rem; }
+
+    .showing-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .showing-label {
+      font-size: 0.58rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .sort-select {
+      background: var(--drop-bg); border: 1px solid var(--border2);
+      border-radius: 4px; color: var(--muted);
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.58rem; letter-spacing: 0.12em;
+      padding: 0.35rem 0.7rem; outline: none; cursor: pointer;
+    }
+    .sort-select option { background: var(--surface); }
+
+    /* Masonry */
+    .masonry {
+      columns: 4 220px;
+      column-gap: 16px;
+    }
+
+    .card {
+      break-inside: avoid;
+      margin-bottom: 16px;
+      cursor: pointer;
+      animation: fadeIn 0.4s ease both;
+    }
+
+    .card-img-wrap {
+      overflow: hidden;
+      background: var(--surface);
+      position: relative;
+    }
+
+    .card-img {
+      width: 100%; display: block;
+      transition: transform 0.6s ease, opacity 0.4s;
+      opacity: 0;
+    }
+    .card-img.on { opacity: 1; }
+    .card:hover .card-img { transform: scale(1.04); }
+
+    .card-ph {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem; color: var(--border2);
+      min-height: 160px;
+    }
+
+    .card-body { padding: 0.7rem 0 0.2rem; }
+
+    .card-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem; font-weight: 300;
+      line-height: 1.2; margin-bottom: 0.2rem;
+      color: var(--text);
+    }
+
+    .card-divider { height: 1px; background: var(--border2); margin: 0.4rem 0; }
+
+    .card-artist {
+      font-size: 0.62rem; color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── SKELETON ── */
+    .skeleton-masonry { columns: 4 220px; column-gap: 16px; }
+    .skel-card { break-inside: avoid; margin-bottom: 16px; }
+    .skel-img { background: var(--surface); animation: pulse 1.8s ease infinite; }
+    .skel-body { padding: 0.7rem 0 0.2rem; }
+    .skel-line { height: 10px; background: var(--surface); border-radius: 1px; margin-bottom: 0.4rem; animation: pulse 1.8s ease infinite; }
+    .skel-line.s { width: 50%; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* ── LOAD MORE ── */
+    .load-more-wrap {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 0.8rem;
+      padding: 2rem 2.5rem 3rem;
+    }
+    .load-more-btn {
+      padding: 0.8rem 3rem;
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase;
+      background: none; border: 1px solid var(--accent-dim);
+      color: var(--accent); cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .load-more-btn:hover:not(:disabled) { background: var(--accent); color: var(--bg); }
+    .load-more-btn:disabled { opacity: 0.35; cursor: default; }
+    .load-more-meta { font-size: 0.55rem; letter-spacing: 0.12em; color: var(--muted); }
+
+    /* ── EMPTY ── */
+    .empty { padding: 4rem; text-align: center; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+
+    /* ── MODAL ── */
+    #modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(10,10,10,0.97);
+      z-index: 500; display: none;
+      align-items: center; justify-content: center;
+      padding: 1.5rem; backdrop-filter: blur(12px);
+    }
+    #modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+
+    .modal {
+      display: grid; grid-template-columns: 1fr 380px;
+      max-width: 1080px; width: 100%; max-height: 94vh;
+      border: 1px solid var(--border2); background: var(--surface);
+      overflow: hidden; position: relative;
+    }
+
+    .modal-media {
+      overflow-y: auto;
+      background: #000;
+      display: flex; align-items: flex-start; justify-content: center;
+    }
+    .modal-img { width: 100%; display: block; }
+    .modal-ph-lg { font-family: 'Cormorant Garamond', serif; font-size: 5rem; color: var(--border2); margin: auto; }
+
+    .modal-panel {
+      display: flex; flex-direction: column;
+      border-left: 1px solid var(--border); overflow-y: auto;
+    }
+    .modal-inner { padding: 2rem 1.8rem; flex: 1; display: flex; flex-direction: column; }
+
+    .modal-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.4rem; }
+    .tag {
+      font-size: 0.5rem; letter-spacing: 0.2em; text-transform: uppercase;
+      padding: 0.18em 0.6em; border-radius: 2px; border: 1px solid;
+    }
+    .tag-chain   { color: var(--accent); border-color: var(--accent-dim); }
+    .tag-genre   { color: var(--muted); border-color: #333; }
+    .tag-edition { color: var(--muted); border-color: #333; }
+    .tag-onchain { color: #6db87a; border-color: #2d5c35; }
+
+    .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; line-height: 1.08; margin-bottom: 0.3rem; }
+    .modal-collection { font-size: 0.62rem; color: var(--muted); font-style: italic; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+    .modal-artist { font-size: 0.72rem; margin-bottom: 1.5rem; }
+    .modal-artist a { color: var(--accent); text-decoration: none; }
+    .modal-artist a:hover { text-decoration: underline; }
+    .modal-hr { height: 1px; background: var(--border); margin-bottom: 1.4rem; }
+    .modal-desc { font-size: 0.67rem; line-height: 1.85; color: var(--muted); margin-bottom: 1.5rem; }
+
+    .modal-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem 1.2rem; margin-bottom: 1.5rem; }
+    .mf-label { font-size: 0.48rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted2); margin-bottom: 0.2rem; }
+    .mf-value { font-size: 0.66rem; color: var(--text); }
+
+    .modal-cta {
+      display: block; padding: 0.9rem; text-align: center;
+      border: 1px solid var(--accent-dim); color: var(--accent);
+      text-decoration: none; font-size: 0.58rem; letter-spacing: 0.22em;
+      text-transform: uppercase; transition: background 0.2s, color 0.2s;
+      margin-top: auto;
+    }
+    .modal-cta:hover { background: var(--accent); color: var(--bg); }
+
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: none; border: 1px solid var(--border2);
+      color: var(--muted); font-family: 'Courier Prime', monospace;
+      font-size: 0.55rem; letter-spacing: 0.15em;
+      padding: 0.28rem 0.55rem; cursor: pointer; z-index: 10;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .modal-close:hover { color: var(--text); border-color: var(--muted); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      color: var(--muted); font-size: 0.58rem; letter-spacing: 0.1em;
+      flex-wrap: wrap; gap: 0.5rem;
+    }
+
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
     @media(max-width:900px){
-      header{padding:1.2rem 1.6rem;} #hero{padding:1.6rem;height:70vh;} .hero-nav{bottom:1.6rem;right:1.6rem;}
-      .divider{padding-left:1.6rem;padding-right:1.6rem;} .grid,.skeleton-grid{margin:0 1.6rem;grid-template-columns:1fr 1fr;}
-      .load-more-area{padding:2rem 1.6rem;} .modal{grid-template-columns:1fr;} .modal-media{max-height:50vw;}
-      footer{padding:1.6rem;flex-direction:column;text-align:center;}
+      header,.filter-bar,.grid-wrap { padding-left:1.4rem; padding-right:1.4rem; }
+      .masonry,.skeleton-masonry { columns:2 180px; }
+      .modal { grid-template-columns:1fr; }
+      .modal-media { max-height:50vw; }
     }
-    @media(max-width:500px){ .grid,.skeleton-grid{grid-template-columns:1fr;margin:0 1rem;} }
+    @media(max-width:500px){
+      .masonry,.skeleton-masonry { columns:1; }
+    }
   </style>
 </head>
 <body>
@@ -153,29 +352,23 @@
   <span class="header-count" id="header-count">Loading…</span>
 </header>
 
-<div class="toolbar">
-  <div class="filter-group" id="chain-filters">
-    <button class="filter-btn active" data-filter="chain" data-val="all"      onclick="setFilter('chain','all',this)">All</button>
-    <button class="filter-btn"        data-filter="chain" data-val="Ethereum" onclick="setFilter('chain','Ethereum',this)">Ethereum</button>
-    <button class="filter-btn"        data-filter="chain" data-val="Tezos"    onclick="setFilter('chain','Tezos',this)">Tezos</button>
-    <button class="filter-btn"        data-filter="chain" data-val="Base"     onclick="setFilter('chain','Base',this)">Base</button>
-    <button class="filter-btn"        data-filter="chain" data-val="other"    onclick="setFilter('chain','other',this)">Other</button>
-  </div>
-  <div class="filter-group" id="genre-filters"></div>
-  <div class="filter-group">
-    <button class="filter-btn active" data-filter="edition" data-val="all"        onclick="setFilter('edition','all',this)">All editions</button>
-    <button class="filter-btn"        data-filter="edition" data-val="1/1"         onclick="setFilter('edition','1/1',this)">1/1</button>
-    <button class="filter-btn"        data-filter="edition" data-val="Edition"     onclick="setFilter('edition','Edition',this)">Edition</button>
-    <button class="filter-btn"        data-filter="edition" data-val="Generative"  onclick="setFilter('edition','Generative',this)">Generative</button>
-  </div>
-  <div class="filter-group">
-    <button class="filter-btn" data-filter="onchain" data-val="Yes" onclick="toggleOnchain(this)">On-chain only</button>
-  </div>
-  <div class="search-wrap">
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="search-row">
     <span class="search-icon">⌕</span>
-    <input class="search-input" id="search" type="text" placeholder="Search name, artist, collection…" oninput="onSearch()" />
+    <input class="search-input" id="search" type="text"
+      placeholder="Search for artist, genre, collection etc."
+      oninput="onSearch()" />
   </div>
-  <div class="filter-group">
+  <div class="dropdowns-row" id="dropdowns-row">
+    <!-- Dropdowns injected by JS -->
+  </div>
+</div>
+
+<!-- GRID -->
+<div class="grid-wrap">
+  <div class="showing-bar">
+    <span class="showing-label" id="showing-label">—</span>
     <select class="sort-select" onchange="setSort(this.value)">
       <option value="acquired-desc">Newest acquired</option>
       <option value="acquired-asc">Oldest acquired</option>
@@ -184,75 +377,50 @@
       <option value="artist-asc">Artist A–Z</option>
     </select>
   </div>
-</div>
 
-<section id="hero" onclick="heroClick()">
-  <img id="hero-bg" src="" alt="" onload="this.classList.add('on')" />
-  <div class="hero-ph" id="hero-ph">◈</div>
-  <div class="hero-info" id="hero-info" style="opacity:0;transition:opacity 0.5s">
-    <div class="hero-tags" id="hero-tags"></div>
-    <h1 class="hero-title"      id="hero-title"></h1>
-    <p  class="hero-collection" id="hero-collection"></p>
-    <p  class="hero-artist"     id="hero-artist"></p>
-    <p  class="hero-desc"       id="hero-desc"></p>
-    <div class="hero-actions">
-      <a class="hero-cta" id="hero-link" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">View on-chain ↗</a>
-      <span class="hero-acquired" id="hero-acquired"></span>
-    </div>
+  <!-- Skeleton -->
+  <div class="skeleton-masonry" id="skeleton">
+    <div class="skel-card"><div class="skel-img" style="height:280px"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+    <div class="skel-card"><div class="skel-img" style="height:380px"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+    <div class="skel-card"><div class="skel-img" style="height:240px"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+    <div class="skel-card"><div class="skel-img" style="height:340px"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+    <div class="skel-card"><div class="skel-img" style="height:300px"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+    <div class="skel-card"><div class="skel-img" style="height:260px"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+    <div class="skel-card"><div class="skel-img" style="height:360px"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+    <div class="skel-card"><div class="skel-img" style="height:220px"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
   </div>
-  <div class="hero-nav" id="hero-nav" style="opacity:0;transition:opacity 0.5s">
-    <button class="hero-nav-btn" onclick="prevHero(event)">← prev</button>
-    <span class="hero-counter" id="hero-counter">— / —</span>
-    <button class="hero-nav-btn" onclick="nextHero(event)">next →</button>
-  </div>
-</section>
 
-<div class="divider">
-  <span class="divider-label">Collection</span>
-  <div class="divider-line"></div>
-  <span class="divider-label" id="showing-label">—</span>
+  <div class="masonry" id="grid" style="display:none"></div>
 </div>
 
-<div class="skeleton-grid" id="skeleton">
-  <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div><div class="skel-line xs"></div></div></div>
-  <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div><div class="skel-line xs"></div></div></div>
-  <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div><div class="skel-line xs"></div></div></div>
-  <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div><div class="skel-line xs"></div></div></div>
-  <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div><div class="skel-line xs"></div></div></div>
-  <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div><div class="skel-line xs"></div></div></div>
-  <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div><div class="skel-line xs"></div></div></div>
-  <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div><div class="skel-line xs"></div></div></div>
-  <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div><div class="skel-line xs"></div></div></div>
-  <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div><div class="skel-line xs"></div></div></div>
-  <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div><div class="skel-line xs"></div></div></div>
-  <div class="skel-card"><div class="skel-img"></div><div class="skel-body"><div class="skel-line"></div><div class="skel-line s"></div><div class="skel-line xs"></div></div></div>
-</div>
-
-<div class="grid" id="grid" style="display:none"></div>
-
-<div class="load-more-area" id="load-more-area" style="display:none">
+<div class="load-more-wrap" id="load-more-wrap" style="display:none">
   <button class="load-more-btn" id="load-more-btn" onclick="loadMore()">Load more</button>
   <span class="load-more-meta" id="load-more-meta"></span>
 </div>
 
+<!-- MODAL -->
 <div id="modal-overlay" onclick="handleOverlay(event)">
   <div class="modal">
-    <div class="modal-media" id="modal-media"><span class="modal-ph-lg">◈</span></div>
+    <div class="modal-media" id="modal-media">
+      <span class="modal-ph-lg">◈</span>
+    </div>
     <div class="modal-panel">
-      <div class="modal-panel-inner">
-        <div class="modal-tags"      id="m-tags"></div>
-        <h2 class="modal-title"     id="m-title">—</h2>
-        <p  class="modal-collection"id="m-collection"></p>
-        <p  class="modal-artist"    id="m-artist"></p>
+      <div class="modal-inner">
+        <div class="modal-tags"       id="m-tags"></div>
+        <h2 class="modal-title"       id="m-title">—</h2>
+        <p  class="modal-collection"  id="m-collection"></p>
+        <p  class="modal-artist"      id="m-artist"></p>
         <div class="modal-hr"></div>
-        <p  class="modal-desc"      id="m-desc"></p>
+        <p  class="modal-desc"        id="m-desc"></p>
         <div class="modal-meta">
-          <div><p class="modal-field-label">Blockchain</p><p class="modal-field-value" id="m-chain">—</p></div>
-          <div><p class="modal-field-label">Edition type</p><p class="modal-field-value" id="m-edition">—</p></div>
-          <div><p class="modal-field-label">Genre</p><p class="modal-field-value" id="m-genre">—</p></div>
-          <div><p class="modal-field-label">Collection size</p><p class="modal-field-value" id="m-size">—</p></div>
-          <div><p class="modal-field-label">Created</p><p class="modal-field-value" id="m-created">—</p></div>
-          <div><p class="modal-field-label">Acquired</p><p class="modal-field-value" id="m-acquired">—</p></div>
+          <div><p class="mf-label">Blockchain</p><p class="mf-value" id="m-chain">—</p></div>
+          <div><p class="mf-label">Edition type</p><p class="mf-value" id="m-edition">—</p></div>
+          <div><p class="mf-label">Genre</p><p class="mf-value" id="m-genre">—</p></div>
+          <div><p class="mf-label">Collection size</p><p class="mf-value" id="m-size">—</p></div>
+          <div><p class="mf-label">Primary colour</p><p class="mf-value" id="m-colour">—</p></div>
+          <div><p class="mf-label">Fully on-chain</p><p class="mf-value" id="m-onchain">—</p></div>
+          <div><p class="mf-label">Created</p><p class="mf-value" id="m-created">—</p></div>
+          <div><p class="mf-label">Acquired</p><p class="mf-value" id="m-acquired">—</p></div>
         </div>
         <a class="modal-cta" id="m-link" href="#" target="_blank" rel="noopener">View on-chain ↗</a>
       </div>
@@ -263,20 +431,37 @@
 
 <footer>
   <span>ol1y.art</span>
-  <span id="footer-updated"></span>
+  <span id="footer-note"></span>
   <span>All rights belong to respective artists</span>
 </footer>
 
 <script>
+// ── CONFIG ────────────────────────────────────────────────────
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS154SLHdR0VAHbIF85AbankTkj0BaChSYHGoDmNxep7GlNk1dvltosYXXKcagJlxm82SPATyPl4_4t/pub?gid=1113744394&single=true&output=csv';
-const CACHE_KEY     = 'ol1y_collection_v2';
-const CACHE_TTL_MS  = 60 * 60 * 1000;
-const PAGE_SIZE     = 48;
+const CACHE_KEY    = 'ol1y_v3';
+const CACHE_TTL    = 60 * 60 * 1000; // 1 hour
+const PAGE_SIZE    = 48;
 
-let allNFTs = [], filtered = [], displayed = 0, heroIdx = 0;
-const activeFilters = { chain:'all', edition:'all', onchain:'all', genre:'all' };
-let activeSort = 'acquired-desc', searchQuery = '', onchainOnly = false;
+// ── DROPDOWN DEFINITIONS ──────────────────────────────────────
+const DROPDOWNS = [
+  { id:'artist',   label:'Artist',        field:'Artist' },
+  { id:'coll',     label:'Collection',    field:'Collection' },
+  { id:'genre',    label:'Genre',         field:'Genre' },
+  { id:'chain',    label:'Blockchain',    field:'Blockchain' },
+  { id:'colour',   label:'Primary Colour',field:'Primary Colour' },
+  { id:'edition',  label:'Edition Type',  field:'Edition Type' },
+];
 
+// ── STATE ─────────────────────────────────────────────────────
+let allNFTs    = [];
+let filtered   = [];
+let displayed  = 0;
+let activeSort = 'acquired-desc';
+let searchQ    = '';
+const selections = {};  // { artist: null, coll: null, ... }
+DROPDOWNS.forEach(d => selections[d.id] = null);
+
+// ── CSV PARSE ─────────────────────────────────────────────────
 function parseCSV(text) {
   const lines = [];
   let cur = '', inQ = false;
@@ -299,215 +484,259 @@ function parseCSV(text) {
     cols.push(cell.trim());
     return cols;
   }
-
   const headers = splitRow(lines[0]);
   return lines.slice(1)
     .map(l => {
-      const vals = splitRow(l);
-      const obj = {};
-      headers.forEach((h, i) => obj[h.trim()] = (vals[i] || '').trim());
-      return obj;
+      const v = splitRow(l), o = {};
+      headers.forEach((h,i) => o[h.trim()] = (v[i]||'').trim());
+      return o;
     })
     .filter(r => r['Name'] && r['Name'] !== 'undefined' && r['Name'] !== '');
 }
 
+// ── LOAD + CACHE ──────────────────────────────────────────────
 async function loadCollection() {
   try {
-    const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
-    if (cached && Date.now() - cached.ts < CACHE_TTL_MS) return cached.data;
+    const c = JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
+    if (c && Date.now() - c.ts < CACHE_TTL) return c.data;
   } catch {}
   const r = await fetch(SHEET_CSV_URL);
   if (!r.ok) throw new Error('HTTP ' + r.status);
-  const text = await r.text();
-  const data = parseCSV(text);
+  const data = parseCSV(await r.text());
   try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {}
   return data;
 }
 
-function parseDate(str) {
-  if (!str) return null;
-  const d = new Date(str);
-  return isNaN(d) ? null : d;
+// ── DROPDOWNS ─────────────────────────────────────────────────
+function buildDropdowns(nfts) {
+  const row = document.getElementById('dropdowns-row');
+  row.innerHTML = '';
+
+  DROPDOWNS.forEach(({ id, label, field }) => {
+    // Unique sorted values
+    const vals = [...new Set(nfts.map(n => n[field]).filter(v => v && v !== 'TBC'))]
+      .sort((a,b) => a.localeCompare(b));
+
+    const wrap = document.createElement('div');
+    wrap.className = 'dd-wrap';
+    wrap.id = 'dd-' + id;
+
+    wrap.innerHTML = `
+      <button class="dd-btn" onclick="toggleDD('${id}')">
+        <span class="dd-label">${label}</span>
+        <span class="dd-arrow">▾</span>
+      </button>
+      <div class="dd-menu" id="menu-${id}">
+        <div class="dd-item selected" data-val="" onclick="selectDD('${id}','',this)">All</div>
+        ${vals.map(v => `<div class="dd-item" data-val="${esc(v)}" onclick="selectDD('${id}','${esc(v)}',this)">${esc(v)}</div>`).join('')}
+      </div>`;
+    row.appendChild(wrap);
+  });
+
+  // Clear button
+  const clear = document.createElement('button');
+  clear.className = 'clear-btn';
+  clear.textContent = 'Clear filters';
+  clear.onclick = clearFilters;
+  row.appendChild(clear);
 }
 
-function dateCmp(a, b) {
-  const da = parseDate(a), db = parseDate(b);
-  if (!da && !db) return 0;
-  if (!da) return 1; if (!db) return -1;
-  return db - da;
+function toggleDD(id) {
+  const wrap = document.getElementById('dd-' + id);
+  const isOpen = wrap.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.dd-wrap.open').forEach(w => w.classList.remove('open'));
+  if (!isOpen) wrap.classList.add('open');
 }
 
-function applyFilters() {
-  const q = searchQuery.toLowerCase();
-  const mainChains = ['Ethereum','Tezos','Base'];
-  filtered = allNFTs.filter(n => {
-    if (activeFilters.chain !== 'all') {
-      if (activeFilters.chain === 'other') { if (mainChains.includes(n.Blockchain)) return false; }
-      else if (n.Blockchain !== activeFilters.chain) return false;
+// Close dropdowns on outside click
+document.addEventListener('click', e => {
+  if (!e.target.closest('.dd-wrap')) {
+    document.querySelectorAll('.dd-wrap.open').forEach(w => w.classList.remove('open'));
+  }
+});
+
+function selectDD(id, val, item) {
+  selections[id] = val || null;
+
+  // Update menu items
+  const menu = document.getElementById('menu-' + id);
+  menu.querySelectorAll('.dd-item').forEach(el => el.classList.remove('selected'));
+  item.classList.add('selected');
+
+  // Update button label + active state
+  const btn = document.querySelector(`#dd-${id} .dd-btn`);
+  const lbl = document.querySelector(`#dd-${id} .dd-label`);
+  const def = DROPDOWNS.find(d => d.id === id).label;
+  lbl.textContent = val ? val : def;
+  btn.classList.toggle('active', !!val);
+
+  // Close dropdown
+  document.getElementById('dd-' + id).classList.remove('open');
+  refresh();
+}
+
+function clearFilters() {
+  DROPDOWNS.forEach(d => {
+    selections[d.id] = null;
+    const menu = document.getElementById('menu-' + d.id);
+    if (menu) {
+      menu.querySelectorAll('.dd-item').forEach(el => el.classList.remove('selected'));
+      menu.querySelector('.dd-item').classList.add('selected');
     }
-    if (activeFilters.edition !== 'all' && n['Edition Type'] !== activeFilters.edition) return false;
-    if (onchainOnly && n['Fully On-Chain?'] !== 'Yes') return false;
-    if (activeFilters.genre !== 'all' && n.Genre !== activeFilters.genre) return false;
+    const btn = document.querySelector(`#dd-${d.id} .dd-btn`);
+    const lbl = document.querySelector(`#dd-${d.id} .dd-label`);
+    if (btn) btn.classList.remove('active');
+    if (lbl) lbl.textContent = d.label;
+  });
+  document.getElementById('search').value = '';
+  searchQ = '';
+  refresh();
+}
+
+// ── FILTER + SORT ─────────────────────────────────────────────
+function applyFilters() {
+  const q = searchQ.toLowerCase();
+  filtered = allNFTs.filter(n => {
+    for (const { id, field } of DROPDOWNS) {
+      const sel = selections[id];
+      if (sel && n[field] !== sel) return false;
+    }
     if (q) {
-      const hay = [n.Name,n.Artist,n.Collection,n.Genre,n['Theme (key words)']].join(' ').toLowerCase();
+      const hay = [n.Name,n.Artist,n.Collection,n.Genre,n['Theme (key words)'],n['Primary Colour']].join(' ').toLowerCase();
       if (!hay.includes(q)) return false;
     }
     return true;
   });
+
   filtered.sort((a,b) => {
     switch(activeSort) {
       case 'acquired-desc': return dateCmp(b.Acquired, a.Acquired);
       case 'acquired-asc':  return dateCmp(a.Acquired, b.Acquired);
-      case 'name-asc':   return (a.Name||'').localeCompare(b.Name||'');
-      case 'name-desc':  return (b.Name||'').localeCompare(a.Name||'');
-      case 'artist-asc': return (a.Artist||'').localeCompare(b.Artist||'');
+      case 'name-asc':      return (a.Name||'').localeCompare(b.Name||'');
+      case 'name-desc':     return (b.Name||'').localeCompare(a.Name||'');
+      case 'artist-asc':    return (a.Artist||'').localeCompare(b.Artist||'');
       default: return 0;
     }
   });
 }
 
-function setFilter(type, val, btn) {
-  activeFilters[type] = val;
-  btn.closest('.filter-group').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  refresh();
+function dateCmp(a, b) {
+  const da = a ? new Date(a) : null, db = b ? new Date(b) : null;
+  if (!da && !db) return 0;
+  if (!da) return 1; if (!db) return -1;
+  return db - da;
 }
-
-function toggleOnchain(btn) {
-  onchainOnly = !onchainOnly;
-  btn.classList.toggle('active', onchainOnly);
-  refresh();
-}
-
-function setSort(val) { activeSort = val; refresh(); }
 
 let searchTimer;
 function onSearch() {
   clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => { searchQuery = document.getElementById('search').value; refresh(); }, 220);
+  searchTimer = setTimeout(() => { searchQ = document.getElementById('search').value; refresh(); }, 200);
 }
 
-function refresh() { applyFilters(); renderGrid(true); renderHero(0); }
+function setSort(val) { activeSort = val; refresh(); }
 
-function buildGenreFilter(nfts) {
-  const counts = {};
-  nfts.forEach(n => { if (n.Genre && n.Genre !== 'TBC') counts[n.Genre] = (counts[n.Genre]||0)+1; });
-  const top = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,6).map(e=>e[0]);
-  const wrap = document.getElementById('genre-filters');
-  wrap.innerHTML = '';
-  const allBtn = document.createElement('button');
-  allBtn.className = 'filter-btn active';
-  allBtn.textContent = 'All genres';
-  allBtn.onclick = function() { setFilter('genre','all',this); };
-  wrap.appendChild(allBtn);
-  top.forEach(g => {
-    const btn = document.createElement('button');
-    btn.className = 'filter-btn'; btn.textContent = g;
-    btn.onclick = function() { setFilter('genre',g,this); };
-    wrap.appendChild(btn);
+function refresh() { applyFilters(); renderGrid(true); }
+
+// ── GRID ──────────────────────────────────────────────────────
+function renderGrid(reset = true) {
+  const grid = document.getElementById('grid');
+  if (reset) { grid.innerHTML = ''; displayed = 0; }
+
+  if (filtered.length === 0 && reset) {
+    grid.innerHTML = '<div class="empty" style="grid-column:1/-1">No works match your filters.</div>';
+    document.getElementById('load-more-wrap').style.display = 'none';
+    document.getElementById('showing-label').textContent = '0 works';
+    return;
+  }
+
+  const slice = filtered.slice(displayed, displayed + PAGE_SIZE);
+  displayed += slice.length;
+
+  slice.forEach((nft, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.animationDelay = Math.min(i,20)*0.025 + 's';
+    card.onclick = () => openModal(filtered.indexOf(nft));
+
+    card.innerHTML = `
+      <div class="card-img-wrap">
+        ${nft.Image
+          ? `<img class="card-img" src="${esc(nft.Image)}" alt="${esc(nft.Name)}" loading="lazy"
+               onload="this.classList.add('on')" onerror="this.style.display='none'">`
+          : ''}
+        <div class="card-ph" style="min-height:200px">◈</div>
+      </div>
+      <div class="card-body">
+        <p class="card-name">${esc(nft.Name)}</p>
+        <div class="card-divider"></div>
+        <p class="card-artist">${esc(nft.Artist || 'Unknown artist')}</p>
+      </div>`;
+    grid.appendChild(card);
   });
+
+  // Counts
+  const total = filtered.length, all = allNFTs.length;
+  document.getElementById('showing-label').textContent =
+    total === all ? `${all.toLocaleString()} works` : `${total.toLocaleString()} of ${all.toLocaleString()} works`;
+  document.getElementById('header-count').textContent = `${all.toLocaleString()} works`;
+
+  // Load more
+  const more = displayed < filtered.length;
+  const area = document.getElementById('load-more-wrap');
+  const btn  = document.getElementById('load-more-btn');
+  const meta = document.getElementById('load-more-meta');
+  area.style.display = filtered.length > 0 ? 'flex' : 'none';
+  btn.style.display  = more ? 'block' : 'none';
+  btn.disabled = false; btn.textContent = 'Load more';
+  meta.textContent = more
+    ? `${displayed.toLocaleString()} of ${filtered.length.toLocaleString()} shown`
+    : `All ${filtered.length.toLocaleString()} works shown`;
 }
 
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+function loadMore() { renderGrid(false); }
 
+// ── MODAL ─────────────────────────────────────────────────────
 function makeTags(nft) {
   const t = [];
-  if (nft.Blockchain) t.push(`<span class="tag tag-chain">${esc(nft.Blockchain)}</span>`);
+  if (nft.Blockchain)       t.push(`<span class="tag tag-chain">${esc(nft.Blockchain)}</span>`);
   if (nft.Genre && nft.Genre !== 'TBC') t.push(`<span class="tag tag-genre">${esc(nft.Genre)}</span>`);
   if (nft['Edition Type']) t.push(`<span class="tag tag-edition">${esc(nft['Edition Type'])}</span>`);
   if (nft['Fully On-Chain?'] === 'Yes') t.push(`<span class="tag tag-onchain">Fully on-chain</span>`);
   return t.join('');
 }
 
-function renderGrid(reset = true) {
-  const grid = document.getElementById('grid');
-  if (reset) { grid.innerHTML = ''; displayed = 0; }
-  const slice = filtered.slice(displayed, displayed + PAGE_SIZE);
-  displayed += slice.length;
-  slice.forEach((nft, i) => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.style.animationDelay = Math.min(i,18)*0.025 + 's';
-    card.onclick = () => openModal(filtered.indexOf(nft));
-    card.innerHTML = `
-      <div class="card-img-wrap">
-        ${nft.Image ? `<img class="card-img" src="${esc(nft.Image)}" alt="${esc(nft.Name)}" loading="lazy" onload="this.classList.add('on')" onerror="this.style.display='none'">` : ''}
-        <div class="card-ph">◈</div>
-        ${nft['Fully On-Chain?'] === 'Yes' ? `<span class="card-onchain-pip">On-chain</span>` : ''}
-      </div>
-      <div class="card-body">
-        <p class="card-name">${esc(nft.Name)}</p>
-        <p class="card-artist">${esc(nft.Artist || 'Unknown artist')}</p>
-        <div class="card-footer">
-          <span class="card-chain">${esc(nft.Blockchain||'—')}</span>
-          <span class="card-genre">${esc(nft.Genre||'')}</span>
-          ${nft.Marketplace ? `<a class="card-link" href="${esc(nft.Marketplace)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">↗</a>` : ''}
-        </div>
-      </div>`;
-    grid.appendChild(card);
-  });
-  const total = filtered.length, all = allNFTs.length;
-  document.getElementById('showing-label').textContent = total === all ? `${total.toLocaleString()} works` : `${total.toLocaleString()} of ${all.toLocaleString()} works`;
-  document.getElementById('header-count').textContent  = `${all.toLocaleString()} works`;
-  const area = document.getElementById('load-more-area');
-  const btn  = document.getElementById('load-more-btn');
-  const meta = document.getElementById('load-more-meta');
-  const more = displayed < filtered.length;
-  area.style.display = filtered.length > 0 ? 'flex' : 'none';
-  btn.style.display  = more ? 'block' : 'none';
-  btn.disabled = false; btn.textContent = 'Load more';
-  meta.textContent = more ? `${displayed.toLocaleString()} of ${filtered.length.toLocaleString()} shown` : `All ${filtered.length.toLocaleString()} works shown`;
-}
-
-function loadMore() { renderGrid(false); }
-
-function renderHero(idx) {
-  const pool = filtered.length ? filtered : allNFTs;
-  if (!pool.length) return;
-  heroIdx = ((idx % pool.length) + pool.length) % pool.length;
-  const nft = pool[heroIdx];
-  const bg = document.getElementById('hero-bg');
-  if (nft.Image) { bg.classList.remove('on'); bg.src = nft.Image; document.getElementById('hero-ph').style.opacity='0'; }
-  else { bg.src=''; document.getElementById('hero-ph').style.opacity='1'; }
-  document.getElementById('hero-tags').innerHTML = makeTags(nft);
-  document.getElementById('hero-title').textContent = nft.Name || '';
-  document.getElementById('hero-collection').textContent = nft.Collection ? 'from ' + nft.Collection : '';
-  const ae = document.getElementById('hero-artist');
-  if (nft['Artist Profile']) ae.innerHTML = `<a class="hero-artist-link" href="${esc(nft['Artist Profile'])}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${esc(nft.Artist||'Unknown artist')}</a>`;
-  else ae.textContent = nft.Artist || 'Unknown artist';
-  document.getElementById('hero-desc').textContent = nft.Description || '';
-  document.getElementById('hero-link').href = nft.Marketplace || '#';
-  document.getElementById('hero-acquired').textContent = nft.Acquired ? 'Acquired ' + nft.Acquired : '';
-  document.getElementById('hero-info').style.opacity = '1';
-  document.getElementById('hero-nav').style.opacity  = '1';
-  document.getElementById('hero-counter').textContent = String(heroIdx+1).padStart(2,'0') + ' / ' + String(pool.length).padStart(2,'0');
-}
-
-function prevHero(e) { e.stopPropagation(); renderHero(heroIdx-1); }
-function nextHero(e) { e.stopPropagation(); renderHero(heroIdx+1); }
-function heroClick() { const pool = filtered.length ? filtered : allNFTs; if (pool.length) openModal(filtered.indexOf(pool[heroIdx])); }
-
 function openModal(idx) {
   if (idx < 0 || idx >= filtered.length) return;
   const nft = filtered[idx];
+
   const media = document.getElementById('modal-media');
-  media.innerHTML = nft.Image ? `<img class="modal-img" src="${esc(nft.Image)}" alt="${esc(nft.Name)}">` : `<span class="modal-ph-lg">◈</span>`;
-  document.getElementById('m-tags').innerHTML = makeTags(nft);
-  document.getElementById('m-title').textContent      = nft.Name || '—';
-  document.getElementById('m-collection').textContent = nft.Collection || '';
+  media.innerHTML = nft.Image
+    ? `<img class="modal-img" src="${esc(nft.Image)}" alt="${esc(nft.Name)}">`
+    : `<span class="modal-ph-lg">◈</span>`;
+
+  document.getElementById('m-tags').innerHTML      = makeTags(nft);
+  document.getElementById('m-title').textContent   = nft.Name || '—';
+  document.getElementById('m-collection').textContent = nft.Collection ? 'from ' + nft.Collection : '';
+
   const ma = document.getElementById('m-artist');
-  if (nft['Artist Profile']) ma.innerHTML = `<a href="${esc(nft['Artist Profile'])}" target="_blank" rel="noopener">${esc(nft.Artist||'Unknown artist')}</a>`;
-  else ma.textContent = nft.Artist || 'Unknown artist';
+  if (nft['Artist Profile'])
+    ma.innerHTML = `<a href="${esc(nft['Artist Profile'])}" target="_blank" rel="noopener">${esc(nft.Artist||'Unknown artist')}</a>`;
+  else
+    ma.textContent = nft.Artist || 'Unknown artist';
+
   document.getElementById('m-desc').textContent    = nft.Description || '';
   document.getElementById('m-chain').textContent   = nft.Blockchain || '—';
   document.getElementById('m-edition').textContent = nft['Edition Type'] || '—';
   document.getElementById('m-genre').textContent   = nft.Genre || '—';
-  document.getElementById('m-size').textContent    = nft['Collection Size'] ? Number(nft['Collection Size']).toLocaleString() : '—';
+  document.getElementById('m-size').textContent    = nft['Collection Size']
+    ? Number(nft['Collection Size']).toLocaleString() : '—';
+  document.getElementById('m-colour').textContent  = nft['Primary Colour'] || '—';
+  document.getElementById('m-onchain').textContent = nft['Fully On-Chain?'] || '—';
   document.getElementById('m-created').textContent  = nft.Created || '—';
   document.getElementById('m-acquired').textContent = nft.Acquired || '—';
   document.getElementById('m-link').href            = nft.Marketplace || '#';
+
   document.getElementById('modal-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -516,29 +745,41 @@ function closeModal() {
   document.getElementById('modal-overlay').classList.remove('open');
   document.body.style.overflow = '';
 }
-function handleOverlay(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
+function handleOverlay(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
+// ── UTIL ──────────────────────────────────────────────────────
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── INIT ──────────────────────────────────────────────────────
 async function init() {
   try {
     allNFTs = await loadCollection();
-    buildGenreFilter(allNFTs);
+    buildDropdowns(allNFTs);
     applyFilters();
+
     document.getElementById('skeleton').style.display = 'none';
-    document.getElementById('grid').style.display     = 'grid';
+    document.getElementById('grid').style.display     = '';
+
     renderGrid(true);
-    renderHero(0);
+
     try {
-      const cached = JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
-      if (cached?.ts) {
-        const d = new Date(cached.ts).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-        document.getElementById('footer-updated').textContent = 'Data cached ' + d;
+      const c = JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
+      if (c?.ts) {
+        const d = new Date(c.ts).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+        document.getElementById('footer-note').textContent = 'Data cached ' + d;
       }
     } catch {}
+
   } catch(e) {
     document.getElementById('skeleton').style.display = 'none';
-    document.getElementById('grid').style.display     = 'grid';
-    document.getElementById('grid').innerHTML = `<div style="padding:4rem 2rem;text-align:center;font-size:0.65rem;color:var(--muted);letter-spacing:0.15em;grid-column:1/-1">Failed to load collection.<br><br>${esc(e.message)}<br><br>Make sure the Google Sheet is published to the web as CSV:<br>File → Share → Publish to web → Comma-separated values (.csv)</div>`;
+    document.getElementById('grid').style.display     = '';
+    document.getElementById('grid').innerHTML =
+      `<div class="empty">Failed to load collection — ${esc(e.message)}<br><br>Make sure the Google Sheet is published to the web as CSV.</div>`;
     document.getElementById('header-count').textContent = 'Error';
   }
 }
